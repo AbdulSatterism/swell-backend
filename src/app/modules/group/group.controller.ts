@@ -12,12 +12,14 @@ const createGroup = catchAsync(
         coverPhoto = `/images/${req.files.image[0].filename}`;
       }
   
+const userId=req.user.id;
+
       const value = {
         coverPhoto,
         ...req.body,
       };
   
-      const result = await groupServices.createGroupIntoDB(value)
+      const result = await groupServices.createGroupIntoDB(userId,value)
   
       sendResponse(res, {
         success: true,
@@ -43,8 +45,45 @@ const getSpecificGroup = catchAsync(
     }
   );
 
+  // nearest all group
+const getNearestGroup = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+      
+  
+      const result = await groupServices.getNearestAllGroup(req.user.id)
+  
+      sendResponse(res, {
+        success: true,
+        statusCode: StatusCodes.OK,
+        message: 'all nearest group by coresponding user group',
+        data: result,
+      });
+    }
+  );
+
+  // export const getAllGroupsSortedByDistance = async (req: Request, res: Response) => {
+  //   try {
+      
+  
+  //     res.status(200).json({
+  //       success: true,
+  //       message: 'Groups retrieved successfully',
+  //       count: nearestGroups.length,
+  //       data: nearestGroups
+  //     });
+  //   } catch (error) {
+  //     console.error('Error retrieving groups:', error);
+  //     res.status(500).json({ 
+  //       success: false,
+  //       message: 'Internal server error', 
+  //       error: error instanceof Error ? error.message : 'Unknown error' 
+  //     });
+  //   }
+  // };
+
 
   export const groupController={
     createGroup,
-    getSpecificGroup
+    getSpecificGroup,
+    getNearestGroup
   }

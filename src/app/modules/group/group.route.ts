@@ -45,6 +45,12 @@ router.get(
   '/specific-group',auth(USER_ROLES.ADMIN, USER_ROLES.USER),groupController.getSpecificGroup
 );
 
+//get nearest group by coresponding user 
+
+router.get(
+  '/near-group',auth(USER_ROLES.ADMIN, USER_ROLES.USER),groupController.getNearestGroup
+);
+
 
 
   export const groupRoutes=router

@@ -6,9 +6,11 @@ const createGroupValidationSchema = z.object({
     address: z.string(),
     bio: z.string(),
     gender: z.enum(["MALE", "FEMALE", "OTHERS"]),
-    latitude: z.number(),
-    longitude: z.number(),
-    location: z.string(),
+    location: z.object({
+      type: z.literal("Point"),
+      coordinates: z
+        .array(z.number())
+    }),
   });
 
 

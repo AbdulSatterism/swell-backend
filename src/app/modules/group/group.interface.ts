@@ -8,7 +8,8 @@ export type TGroup = {
     address: string;
     bio:string;
     gender:"MALE"|'FEMALE'|'OTHERS';
-    latitude: number;
-    longitude: number;
-    location:string;
+    location: {
+      type: "Point";
+      coordinates: [number, number]; // [longitude, latitude]
+    }
   };

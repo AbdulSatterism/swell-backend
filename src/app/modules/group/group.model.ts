@@ -34,22 +34,16 @@ const groupSchema: Schema = new Schema<TGroup>(
         enum: ["MALE", "FEMALE", "OTHERS"],
         required: true,
       },
-      latitude: {
-        type: Number,
-        required: true,
-      },
-      longitude: {
-        type: Number,
-        required: true,
-      },
       location: {
-        type: String,
-        required: true,
+        type: { type: String, default: "Point" },
+        coordinates: { type: [Number] },//[example:longtitude->90.413, latitude->23.456]..must follow this format otherwise error
       },
     },
     {
-      timestamps: true, // Adds createdAt and updatedAt fields
-    }
-  );
+      timestamps: true
+    },
+    )
+
+    groupSchema.index({ location: "2dsphere" })
   
   export const Group =  model<TGroup>("Group", groupSchema);
