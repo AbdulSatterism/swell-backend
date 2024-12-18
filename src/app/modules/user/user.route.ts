@@ -56,9 +56,16 @@ router.get(
 // router.get('/get-all-users', auth(USER_ROLES.ADMIN), UserController.getAllUser);
 
 router.get(
-  '/get-all-users/:id',
+  '/get-single-user/:id',
   auth(USER_ROLES.ADMIN),
   UserController.getSingleUser
+);
+
+// get user by search by phone
+router.get(
+  '/user-search',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  UserController.searchByPhone
 );
 
 router.get(

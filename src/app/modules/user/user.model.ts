@@ -43,6 +43,10 @@ const userSchema = new Schema<IUser, UserModal>(
       type:String,
       default:""
     },
+    groupLimit:{
+      type:Number,
+      default:0
+    },
     image: {
       type: String,
       default:

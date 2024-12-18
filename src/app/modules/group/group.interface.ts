@@ -1,0 +1,14 @@
+import { Types } from "mongoose";
+
+export type TGroup = {
+    groupName?: string;
+    createdBy: Types.ObjectId;
+    invite: Types.ObjectId[];
+    coverPhoto: string;
+    address: string;
+    bio:string;
+    gender:"MALE"|'FEMALE'|'OTHERS';
+    latitude: number;
+    longitude: number;
+    location:string;
+  };

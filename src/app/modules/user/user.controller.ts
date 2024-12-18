@@ -82,10 +82,22 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// search by phone number
+const searchByPhone = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.searchUserByPhone(req.query.searchTerm as string)
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'get user by searching phone number',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   getUserProfile,
   updateProfile,
-
+  searchByPhone,
   getSingleUser,
 };

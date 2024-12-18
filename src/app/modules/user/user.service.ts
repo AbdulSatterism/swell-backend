@@ -171,9 +171,28 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
+// search user by phone
+const searchUserByPhone = async (searchTerm:string) => {
+
+  if (!searchTerm) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "please search by phone number")
+  }
+
+  // Find users with partial phone number match using regex
+  const result = await User.find({ phone: { $regex: searchTerm, $options: 'i' } });
+
+
+  if(!result.length){
+    throw new ApiError(StatusCodes.NOT_FOUND, "user not found by this number")
+  }
+
+  return result;
+};
+
 export const UserService = {
   createUserFromDb,
   getUserProfileFromDB,
   updateProfileToDB,
   getSingleUser,
+  searchUserByPhone
 };

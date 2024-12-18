@@ -16,6 +16,7 @@ const updateUserProfileSchema = z.object({
   school: z.string().optional(),
   address: z.string().optional(),
   instagram: z.string().optional(),
+  name:z.string().optional()
 });
 
 

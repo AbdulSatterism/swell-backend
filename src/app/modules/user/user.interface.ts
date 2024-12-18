@@ -13,6 +13,7 @@ export type IUser = {
   school?: string;
   instagram?: string;
   status: 'active' | 'delete';
+  groupLimit?:number;
   authentication?: {
     isResetPassword: boolean;
     oneTimeCode: number;
