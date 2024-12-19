@@ -1,18 +1,20 @@
-// import { INotification } from '../app/modules/notification/notification.interface';
-// import { Notification } from '../app/modules/notification/notification.model';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable no-undef */
 
-// export const sendNotifications = async (data: any): Promise<INotification> => {
-//   const result = await Notification.create(data);
+import { Notification } from '../app/modules/notifications/notifications.model';
 
-//   //@ts-ignore
-//   const socketIo = global.io;
+export const sendNotifications = async (data: any) => {
+  const result = await Notification.create(data);
 
-//   if (data?.type === 'ADMIN') {
-//     socketIo.emit(`get-notification::${data?.type}`, result);
-//   } else {
-//     socketIo.emit(`get-notification::${data?.receiver}`, result);
-//   }
+  //@ts-ignore
+  const socketIo = global.io;
 
+  if (data?.type === 'ADMIN') {
+    socketIo.emit(`get-notification::${data?.type}`, result);
+  } else {
+    socketIo.emit(`get-notification::${data?.receiver}`, result);
+  }
 
-//   return result;
-// };
+  return result;
+};

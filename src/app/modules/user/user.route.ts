@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { NextFunction, Request, Response } from 'express';
 import { USER_ROLES } from '../../../enums/user';
 import auth from '../../middlewares/auth';
@@ -11,7 +12,7 @@ const router = express.Router();
 router.post(
   '/create-user',
   validateRequest(UserValidation.createUserSchema),
-   UserController.createUser
+  UserController.createUser,
 );
 
 router.patch(
@@ -24,7 +25,7 @@ router.patch(
       let validatedData;
       if (req.body.data) {
         validatedData = UserValidation.updateUserProfileSchema.parse(
-          JSON.parse(req.body.data)
+          JSON.parse(req.body.data),
         );
       }
 
@@ -44,13 +45,13 @@ router.patch(
     } catch (error) {
       next(error);
     }
-  }
+  },
 );
 
 router.get(
   '/user',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  UserController.getUserProfile
+  UserController.getUserProfile,
 );
 
 // router.get('/get-all-users', auth(USER_ROLES.ADMIN), UserController.getAllUser);
@@ -58,20 +59,20 @@ router.get(
 router.get(
   '/get-single-user/:id',
   auth(USER_ROLES.ADMIN),
-  UserController.getSingleUser
+  UserController.getSingleUser,
 );
 
 // get user by search by phone
 router.get(
   '/user-search',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  UserController.searchByPhone
+  UserController.searchByPhone,
 );
 
 router.get(
   '/profile',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
-  UserController.getUserProfile
+  UserController.getUserProfile,
 );
 
 export const UserRoutes = router;

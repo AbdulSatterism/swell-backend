@@ -1,20 +1,16 @@
 import { model, Schema } from 'mongoose';
-import { TChatGroup } from './chatGroup.interface';
+import { TChat } from './chatGroup.interface';
 
-const chatGroupSchema = new Schema<TChatGroup>(
-  {
-    inviterGroup: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Group',
+const chatSchema = new Schema<TChat>({
+  group1: { type: Schema.Types.ObjectId, ref: 'Group', required: true },
+  group2: { type: Schema.Types.ObjectId, ref: 'Group', required: true },
+  messages: [
+    {
+      senderId: { type: Schema.Types.ObjectId, ref: 'User' },
+      message: { type: String },
+      timestamp: { type: Date, default: Date.now },
     },
-    receiverGroup: {
-      type: Schema.Types.ObjectId,
-      required: true,
-      ref: 'Group',
-    },
-  },
-  { timestamps: true },
-);
+  ],
+});
 
-export const ChatGroup = model<TChatGroup>('ChatGroup', chatGroupSchema);
+export const ChatGroup = model<TChat>('ChatGroup', chatSchema);

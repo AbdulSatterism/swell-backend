@@ -16,7 +16,7 @@ export async function sendEmail(email: string, subject: string, text: string) {
     });
 
     const info = await transporter.sendMail({
-      from: `"PET-CLOTH" ${config.email.from}`, // Sender address
+      from: `"Swell" ${config.email.from}`, // Sender address
       to: email, // Recipient's email
       subject: `${subject}`, // Subject line
       text: text, // Plain text version
@@ -121,7 +121,7 @@ export async function sendEmail(email: string, subject: string, text: string) {
   } catch (error) {
     throw new ApiError(
       StatusCodes.INTERNAL_SERVER_ERROR,
-      'Error sending email'
+      'Error sending email',
     );
   }
 }

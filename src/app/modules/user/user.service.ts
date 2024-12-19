@@ -1,6 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
 import { JwtPayload } from 'jsonwebtoken';
-import mongoose, { SortOrder, startSession } from 'mongoose';
 import { USER_ROLES } from '../../../enums/user';
 import ApiError from '../../../errors/ApiError';
 import { emailHelper } from '../../../helpers/emailHelper';
@@ -36,7 +35,7 @@ const createUserFromDb = async (payload: IUser) => {
   };
   const updatedUser = await User.findOneAndUpdate(
     { _id: result._id },
-    { $set: { authentication } }
+    { $set: { authentication } },
   );
   if (!updatedUser) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'User not found for update');
@@ -129,7 +128,7 @@ const createUserFromDb = async (payload: IUser) => {
 // };
 
 const getUserProfileFromDB = async (
-  user: JwtPayload
+  user: JwtPayload,
 ): Promise<Partial<IUser>> => {
   const { id } = user;
   const isExistUser = await User.findById(id);
@@ -142,7 +141,7 @@ const getUserProfileFromDB = async (
 
 const updateProfileToDB = async (
   user: JwtPayload,
-  payload: Partial<IUser>
+  payload: Partial<IUser>,
 ): Promise<Partial<IUser | null>> => {
   const { id } = user;
   const isExistUser = await User.isExistUserById(id);
@@ -172,18 +171,21 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
 };
 
 // search user by phone
-const searchUserByPhone = async (searchTerm:string) => {
-
+const searchUserByPhone = async (searchTerm: string) => {
   if (!searchTerm) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, "please search by phone number")
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'please search by phone number',
+    );
   }
 
   // Find users with partial phone number match using regex
-  const result = await User.find({ phone: { $regex: searchTerm, $options: 'i' } });
+  const result = await User.find({
+    phone: { $regex: searchTerm, $options: 'i' },
+  });
 
-
-  if(!result.length){
-    throw new ApiError(StatusCodes.NOT_FOUND, "user not found by this number")
+  if (!result.length) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'user not found by this number');
   }
 
   return result;
@@ -194,5 +196,5 @@ export const UserService = {
   getUserProfileFromDB,
   updateProfileToDB,
   getSingleUser,
-  searchUserByPhone
+  searchUserByPhone,
 };
