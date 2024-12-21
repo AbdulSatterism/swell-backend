@@ -6,7 +6,18 @@ import { Group } from './group.model';
 import mongoose from 'mongoose';
 
 const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
-  const { createdBy } = payload;
+  const { createdBy, invite } = payload;
+
+  if (!invite) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Group member empty');
+  }
+
+  if (invite.length >= 6) {
+    throw new ApiError(
+      StatusCodes.FORBIDDEN,
+      'invited member can not be more than 6',
+    );
+  }
 
   const isExistUser = await User.isExistUserById(
     createdBy as unknown as string,

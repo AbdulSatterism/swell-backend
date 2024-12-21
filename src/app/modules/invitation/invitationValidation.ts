@@ -7,4 +7,14 @@ const sendValidationSchema = z.object({
   }),
 });
 
-export const invitationValidation = { sendValidationSchema };
+const sendInvitationResponse = z.object({
+  body: z.object({
+    invitationId: z.string(),
+    response: z.enum(['ACCEPTED', 'REJECTED']),
+  }),
+});
+
+export const invitationValidation = {
+  sendValidationSchema,
+  sendInvitationResponse,
+};

@@ -53,79 +53,11 @@ const createUserFromDb = async (payload: IUser) => {
   return result;
 };
 
-// const getAllUsers = async (query: Record<string, unknown>) => {
-//   const {
-//     searchTerm,
-//     page = 1,
-//     limit = 10,
-//     sortBy = 'createdAt',
-//     order = 'desc',
-//     ...filterData
-//   } = query;
+const getAllUsers = async () => {
+  const result = await User.find();
 
-//   // Search conditions
-//   const conditions: any[] = [];
-
-//   if (searchTerm) {
-//     conditions.push({
-//       $or: [{ fullName: { $regex: searchTerm, $options: 'i' } }],
-//     });
-//   }
-
-//   // Add filter conditions
-//   if (Object.keys(filterData).length > 0) {
-//     const filterConditions = Object.entries(filterData).map(
-//       ([field, value]) => ({
-//         [field]: value,
-//       })
-//     );
-//     conditions.push({ $and: filterConditions });
-//   }
-
-//   conditions.push({ role: USER_ROLES.USER });
-
-//   const whereConditions = conditions.length ? { $and: conditions } : {};
-
-//   // Pagination setup
-//   const currentPage = Number(page);
-//   const pageSize = Number(limit);
-//   const skip = (currentPage - 1) * pageSize;
-
-//   // Sorting setup
-//   const sortOrder = order === 'desc' ? -1 : 1;
-//   const sortCondition: { [key: string]: SortOrder } = {
-//     [sortBy as string]: sortOrder,
-//   };
-
-//   // Query the database
-//   const [users, total] = await Promise.all([
-//     User.find(whereConditions)
-//       .sort(sortCondition)
-//       .skip(skip)
-//       .limit(pageSize)
-//       .lean<IUser[]>(), // Assert type
-//     User.countDocuments(whereConditions),
-//   ]);
-
-//   // Format the `updatedAt` field
-//   const formattedUsers = users?.map(user => ({
-//     ...user,
-//     updatedAt: user.updatedAt
-//       ? new Date(user.updatedAt).toISOString().split('T')[0]
-//       : null,
-//   }));
-
-//   // Meta information for pagination
-//   return {
-//     result: formattedUsers,
-//     meta: {
-//       total,
-//       limit: pageSize,
-//       totalPages: Math.ceil(total / pageSize),
-//       currentPage,
-//     },
-//   };
-// };
+  return result;
+};
 
 const getUserProfileFromDB = async (
   user: JwtPayload,
@@ -197,4 +129,5 @@ export const UserService = {
   updateProfileToDB,
   getSingleUser,
   searchUserByPhone,
+  getAllUsers,
 };

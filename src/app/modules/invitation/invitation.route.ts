@@ -15,6 +15,13 @@ router.post(
   invitationController.sendInvitaion,
 );
 
-router.post('/updated/:id', invitationController.updatedInvited);
+router.post(
+  '/send-response',
+  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  validateRequest(invitationValidation.sendInvitationResponse),
+  invitationController.responseInvitation,
+);
+
+// router.post('/updated/:id', invitationController.updatedInvited);
 
 export const invitatioinRoutes = router;

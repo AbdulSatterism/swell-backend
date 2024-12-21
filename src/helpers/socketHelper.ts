@@ -4,7 +4,11 @@ import { logger } from '../shared/logger';
 
 const socket = (io: Server) => {
   io.on('connection', socket => {
-    logger.info(colors.blue('A user connected'));
+    console.log('A user connected:', socket.id);
+    socket.on('join', roomId => {
+      socket.join(roomId);
+      console.log(`User joined room: ${roomId}`);
+    });
 
     //disconnect
     socket.on('disconnect', () => {

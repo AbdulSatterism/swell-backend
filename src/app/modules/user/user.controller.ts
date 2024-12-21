@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
@@ -19,8 +21,20 @@ const createUser = catchAsync(
       message:
         'Please check your email to verify your account. We have sent you an OTP to complete the registration process.',
     });
-  }
+  },
 );
+
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
+  const user = req.user;
+  const result = await UserService.getAllUsers();
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'all user retrieved successfully',
+    data: result,
+  });
+});
 
 const getUserProfile = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
@@ -49,8 +63,6 @@ const updateProfile = catchAsync(
       ...req.body,
     };
 
-    console.log(value);
-
     const result = await UserService.updateProfileToDB(user, value);
 
     sendResponse(res, {
@@ -59,18 +71,8 @@ const updateProfile = catchAsync(
       message: 'Profile updated successfully',
       data: result,
     });
-  }
+  },
 );
-
-// const getAllUser = catchAsync(async (req: Request, res: Response) => {
-//   const result = await UserService.getAllUsers(req.query);
-//   sendResponse(res, {
-//     success: true,
-//     statusCode: StatusCodes.OK,
-//     message: 'User retrived successfully',
-//     data: result,
-//   });
-// });
 
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.getSingleUser(req.params.id);
@@ -84,7 +86,9 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
 
 // search by phone number
 const searchByPhone = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.searchUserByPhone(req.query.searchTerm as string)
+  const result = await UserService.searchUserByPhone(
+    req.query.searchTerm as string,
+  );
 
   sendResponse(res, {
     success: true,
@@ -100,4 +104,5 @@ export const UserController = {
   updateProfile,
   searchByPhone,
   getSingleUser,
+  getAllUser,
 };
