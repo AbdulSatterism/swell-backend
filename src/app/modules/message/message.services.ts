@@ -6,6 +6,7 @@ import { ChatGroup } from '../chatGroup/chatGroup.model';
 import { TMessage } from './message.interface';
 import { Message } from './message.model';
 import { User } from '../user/user.model';
+import mongoose from 'mongoose';
 
 const createMessageIntoGroup = async (payload: TMessage) => {
   // const chatGroupExist = await ChatGroup.findById({});
@@ -26,15 +27,33 @@ const createMessageIntoGroup = async (payload: TMessage) => {
   //@ts-ignore
   const socketIo = global.io;
 
-  const newMessage = await Message.create(payload);
+  // Start a session for the transaction
+  const session = await mongoose.startSession();
 
-  const chatRoom = `${chatGroupExist.group1}-${chatGroupExist.group2}`;
-  socketIo.emit(`new-message:${chatRoom}`, {
-    senderId: payload.senderId,
-    message: payload.message,
-  });
+  try {
+    // Start a transaction
+    session.startTransaction();
 
-  return newMessage;
+    const newMessage = await Message.create([payload], { session });
+
+    const chatRoom = `${chatGroupExist.group1}-${chatGroupExist.group2}`;
+    socketIo.emit(`new-message:${chatRoom}`, {
+      senderId: payload.senderId,
+      message: payload.message,
+    });
+
+    // Commit the transaction
+    await session.commitTransaction();
+
+    return newMessage; // Return the result after successful creation
+  } catch (error) {
+    // If any error occurs, abort the transaction
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    // End the session
+    session.endSession();
+  }
 };
 
 // export async function sendMessage(req: Request, res: Response, io: Server) {
