@@ -3,9 +3,8 @@ import { TMessage } from './message.interface';
 
 const messageSchema = new Schema<TMessage>(
   {
-    chatGroupId: {
-      type: Schema.Types.ObjectId,
-      ref: 'ChatGroup',
+    roomId: {
+      type: String,
       required: true,
     },
     senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },

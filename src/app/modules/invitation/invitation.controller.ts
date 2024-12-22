@@ -36,10 +36,12 @@ import { invitationService } from './invitaiton.services';
 const sendInvitaion = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { senderGroupId, receiverGroupId } = req.body;
+    const { id } = req.user;
 
     const result = await invitationService.sendInvitaioin(
       senderGroupId,
       receiverGroupId,
+      id,
     );
 
     sendResponse(res, {

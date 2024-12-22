@@ -7,13 +7,20 @@ import { ChatGroup } from '../chatGroup/chatGroup.model';
 import { Group } from '../group/group.model';
 import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
+import { User } from '../user/user.model';
 
 const sendInvitaioin = async (
   senderGroupId: string,
   receiverGroupId: string,
+  id: string,
 ) => {
   const senderGroup = await Group.findById({ _id: senderGroupId });
   const receiverGroup = await Group.findById({ _id: receiverGroupId });
+  const existUser = await User.findById(id);
+
+  if (!existUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this user not found');
+  }
 
   if (!senderGroup) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Inviter Group not found');
@@ -29,6 +36,7 @@ const sendInvitaioin = async (
   const result = await Invitation.create({
     senderGroupId,
     receiverGroupId,
+    userId: existUser._id,
     status: 'PENDING',
   });
 
@@ -79,14 +87,16 @@ const responseInvitation = async (invitationId: string, response: string) => {
       group2: receiverGroupId,
     });
 
+    const chatRoom = `${senderGroupId}-${receiverGroupId}`;
+
     if (!chatGroup) {
       chatGroup = await ChatGroup.create({
         group1: senderGroupId,
         group2: receiverGroupId,
+        roomId: chatRoom,
       });
     }
 
-    const chatRoom = `${senderGroupId}-${receiverGroupId}`;
     socketIo.emit(`chat-started:${chatRoom}`, {
       chatRoom,
       message: 'Chat started between the groups.',

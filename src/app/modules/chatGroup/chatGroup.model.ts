@@ -15,6 +15,7 @@ import { TChat } from './chatGroup.interface';
 const chatSchema = new Schema<TChat>({
   group1: { type: Schema.Types.ObjectId, ref: 'Group', required: true },
   group2: { type: Schema.Types.ObjectId, ref: 'Group', required: true },
+  roomId: { type: String },
 });
 
 export const ChatGroup = model<TChat>('ChatGroup', chatSchema);

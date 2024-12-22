@@ -1,7 +1,7 @@
 import { Types } from 'mongoose';
 
 export type TMessage = {
-  chatGroupId: Types.ObjectId;
+  roomId: string;
   senderId: Types.ObjectId;
   message: string;
 };

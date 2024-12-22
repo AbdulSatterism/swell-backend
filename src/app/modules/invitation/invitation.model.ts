@@ -12,6 +12,10 @@ const invitationSchema = new Schema<TInvitation>({
     ref: 'Group',
     required: true,
   },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  },
   status: {
     type: String,
     enum: ['PENDING', 'ACCEPTED', 'REJECTED'],
