@@ -1,24 +1,25 @@
 import { model, Schema } from 'mongoose';
-import { INotification, NotificationModel } from './notifications.interface';
+import { TNotification } from './notifications.interface';
 
-const notificationSchema = new Schema<INotification, NotificationModel>(
+const notificationSchema = new Schema<TNotification>(
   {
-    text: {
-      type: String,
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
-
-    receiver: {
+    senderGroupId: {
       type: Schema.Types.ObjectId,
       ref: 'Group',
+      required: true,
     },
-    read: {
-      type: Boolean,
-      default: false,
+    invitationId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Invitation',
+      required: true,
     },
-    type: {
+    message: {
       type: String,
-      required: false,
     },
   },
   {
@@ -26,7 +27,7 @@ const notificationSchema = new Schema<INotification, NotificationModel>(
   },
 );
 
-export const Notification = model<INotification, NotificationModel>(
+export const Notification = model<TNotification>(
   'Notification',
   notificationSchema,
 );

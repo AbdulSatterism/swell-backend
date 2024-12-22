@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -8,6 +10,7 @@ import { Group } from '../group/group.model';
 import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
+import { Notification } from '../notifications/notifications.model';
 
 const sendInvitaioin = async (
   senderGroupId: string,
@@ -33,6 +36,21 @@ const sendInvitaioin = async (
   //@ts-ignore
   const socketIo = global.io;
 
+  // if already have an invitaion then don't create invitaion for this group only send invitation message
+
+  const existSameGroupInvitation = await Invitation.findOne({
+    $and: [
+      { senderGroupId: senderGroupId },
+      { receiverGroupId: receiverGroupId },
+    ],
+  });
+
+  if (existSameGroupInvitation) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'already send invitaion');
+  }
+
+  // if database has no invitaiton for this group then create other wise
+
   const result = await Invitation.create({
     senderGroupId,
     receiverGroupId,
@@ -44,10 +62,21 @@ const sendInvitaioin = async (
     socketIo.emit(`group-invitation:${memberId}`, {
       senderGroupId,
       invitationId: result?._id,
-      senderGroupName: senderGroup.groupName,
-      receiverGroupName: receiverGroup.groupName,
+      userId: existUser?._id,
+      message: `you got a group invitation from this group ${result?._id}`,
     });
   });
+
+  // after send notification save notificaion in database
+  // create notification
+  const notificationPayload = {
+    userId: existUser?._id,
+    senderGroupId,
+    invitationId: result?._id,
+    message: `you got a group invitation from this group ${result?._id}`,
+  };
+
+  await Notification.create(notificationPayload);
 
   return result;
 };

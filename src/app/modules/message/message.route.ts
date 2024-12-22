@@ -15,7 +15,11 @@ router.post(
   messageControllers.createMessage,
 );
 
-// router.get('/', settingControllers.getAllSetting);
+router.get(
+  '/:roomId',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  messageControllers.showAllMessageSpeceficGroup,
+);
 
 // router.patch(
 //   '/update-setting',

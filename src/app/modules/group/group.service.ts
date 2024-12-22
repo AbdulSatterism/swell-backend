@@ -95,6 +95,30 @@ const allGroupSpecificUser = async (userId: string) => {
   return specificUserGroup;
 };
 
+const myAllJoinedGroup = async (userId: string) => {
+  const isExistUser = await User.isExistUserById(userId);
+
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this user not found');
+  }
+
+  const addedGroups = await Group.find({
+    invite: userId,
+  }).populate({
+    path: 'invite',
+    select: 'name image email',
+  });
+
+  if (!addedGroups.length) {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      'this user not added any group yet!!',
+    );
+  }
+
+  return addedGroups;
+};
+
 const getNearestAllGroup = async (userId: string) => {
   const existGroup = await Group.findOne({ createdBy: userId });
 
@@ -143,8 +167,38 @@ const getNearestAllGroup = async (userId: string) => {
   return nearestGroups;
 };
 
+const leaveFromGroup = async (groupId: string, userId: string) => {
+  const isExistUser = await User.isExistUserById(userId);
+
+  const existGroup = await Group.findById(groupId);
+
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this user not found');
+  }
+
+  if (!existGroup) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this group not found');
+  }
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
+  if (!existGroup.invite.includes(userObjectId)) {
+    throw new Error('User is not a member of this group.');
+  }
+
+  const updatedGroup = await Group.findByIdAndUpdate(
+    groupId,
+    { $pull: { invite: userObjectId } },
+    { new: true }, // Return the updated document
+  );
+
+  return updatedGroup;
+};
+
 export const groupServices = {
   createGroupIntoDB,
   allGroupSpecificUser,
   getNearestAllGroup,
+  myAllJoinedGroup,
+  leaveFromGroup,
 };

@@ -45,6 +45,17 @@ const getSpecificGroup = catchAsync(
   },
 );
 
+const myAllJoinedGroup = catchAsync(async (req, res) => {
+  const result = await groupServices.myAllJoinedGroup(req.user.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'user joined all groups',
+    data: result,
+  });
+});
+
 // nearest all group
 const getNearestGroup = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -58,6 +69,18 @@ const getNearestGroup = catchAsync(
     });
   },
 );
+
+const leaveFromGroup = catchAsync(async (req, res) => {
+  const { groupId, userId } = req.body;
+  const result = await groupServices.leaveFromGroup(groupId, userId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: `user ${userId} has left from the group`,
+    data: result,
+  });
+});
 
 // export const getAllGroupsSortedByDistance = async (req: Request, res: Response) => {
 //   try {
@@ -82,4 +105,6 @@ export const groupController = {
   createGroup,
   getSpecificGroup,
   getNearestGroup,
+  myAllJoinedGroup,
+  leaveFromGroup,
 };

@@ -5,6 +5,7 @@ import ApiError from '../../../errors/ApiError';
 import { TMessage } from './message.interface';
 import { Message } from './message.model';
 import { User } from '../user/user.model';
+import { ChatGroup } from '../chatGroup/chatGroup.model';
 
 const createMessageIntoGroup = async (payload: TMessage) => {
   const userExist = await User.findById(payload.senderId);
@@ -29,6 +30,21 @@ const createMessageIntoGroup = async (payload: TMessage) => {
   return newMessage; // Return the result after successful creation
 };
 
+const showAllMessageSpeceficGroup = async (roomId: string) => {
+  const existChatGroup = await ChatGroup.findOne({ roomId });
+
+  if (!existChatGroup) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
+  }
+
+  const messages = await Message.find({ roomId })
+    .populate('senderId', 'name email image') // Populate sender details (e.g., name, email)
+    .sort({ createdAt: 1 });
+
+  return messages;
+};
+
 export const messageServices = {
   createMessageIntoGroup,
+  showAllMessageSpeceficGroup,
 };

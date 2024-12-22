@@ -48,12 +48,26 @@ router.get(
   groupController.getSpecificGroup,
 );
 
+// user joined groups
+router.get(
+  '/user-group',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  groupController.myAllJoinedGroup,
+);
+
 //get nearest group by coresponding user
 
 router.get(
   '/near-group',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
   groupController.getNearestGroup,
+);
+
+// leave from group
+router.patch(
+  '/user-leave',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  groupController.leaveFromGroup,
 );
 
 export const groupRoutes = router;

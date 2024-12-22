@@ -19,6 +19,20 @@ const createMessage = catchAsync(
   },
 );
 
+const showAllMessageSpeceficGroup = catchAsync(async (req, res) => {
+  const result = await messageServices.showAllMessageSpeceficGroup(
+    req.params.roomId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'all message',
+    data: result,
+  });
+});
+
 export const messageControllers = {
   createMessage,
+  showAllMessageSpeceficGroup,
 };

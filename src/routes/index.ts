@@ -7,12 +7,14 @@ import { invitatioinRoutes } from '../app/modules/invitation/invitation.route';
 import { NotificationRoutes } from '../app/modules/notifications/notifications.route';
 import { settingRoutes } from '../app/modules/setting/setting.route';
 import { messageRoutes } from '../app/modules/message/message.route';
+import { chatGroupRoutes } from '../app/modules/chatGroup/chatGroup.route';
 const router = express.Router();
 
 const apiRoutes = [
   { path: '/user', route: UserRoutes },
   { path: '/auth', route: AuthRoutes },
   { path: '/group', route: groupRoutes },
+  { path: '/chat', route: chatGroupRoutes },
   { path: '/invite', route: invitatioinRoutes },
   { path: '/notification', route: NotificationRoutes },
   { path: '/setting', route: settingRoutes },

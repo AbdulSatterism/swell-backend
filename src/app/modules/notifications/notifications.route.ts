@@ -11,28 +11,28 @@ router.get(
   NotificationController.getNotificationToDb,
 );
 
-router.patch(
-  '/',
-  auth(USER_ROLES.USER),
-  NotificationController.readNotification,
-);
+// router.patch(
+//   '/',
+//   auth(USER_ROLES.USER),
+//   NotificationController.readNotification,
+// );
 
-router.get(
-  '/admin',
-  auth(USER_ROLES.ADMIN),
-  NotificationController.adminNotificationFromDB,
-);
+// router.get(
+//   '/admin',
+//   auth(USER_ROLES.ADMIN),
+//   NotificationController.adminNotificationFromDB,
+// );
 
-router.patch(
-  '/admin',
-  auth(USER_ROLES.ADMIN),
-  NotificationController.adminReadNotification,
-);
+// router.patch(
+//   '/admin',
+//   auth(USER_ROLES.ADMIN),
+//   NotificationController.adminReadNotification,
+// );
 
-router.delete(
-  '/delete-all',
-  auth(USER_ROLES.ADMIN),
-  NotificationController.deleteAllNotifications,
-);
+// router.delete(
+//   '/delete-all',
+//   auth(USER_ROLES.ADMIN),
+//   NotificationController.deleteAllNotifications,
+// );
 
 export const NotificationRoutes = router;
