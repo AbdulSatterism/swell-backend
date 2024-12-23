@@ -13,6 +13,11 @@ const notificationSchema = new Schema<TNotification>(
       ref: 'Group',
       required: true,
     },
+    receiverGroupId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Group',
+      required: true,
+    },
     invitationId: {
       type: Schema.Types.ObjectId,
       ref: 'Invitation',

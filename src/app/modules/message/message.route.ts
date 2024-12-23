@@ -21,11 +21,4 @@ router.get(
   messageControllers.showAllMessageSpeceficGroup,
 );
 
-// router.patch(
-//   '/update-setting',
-//   auth(USER_ROLES.ADMIN),
-//   validateRequest(settingValidaitons.updateSettingValidation),
-//   settingControllers.updateSetting,
-// );
-
 export const messageRoutes = router;

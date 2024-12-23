@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 import path from 'path';
 import DailyRotateFile from 'winston-daily-rotate-file';
 const { createLogger, format, transports } = require('winston');
@@ -21,7 +23,7 @@ const myFormat = printf(
     const seconds = date.getSeconds();
 
     return `${date.toDateString()} ${hour}:${minutes}:${seconds} [${label}] ${level}: ${message}`;
-  }
+  },
 );
 
 const logger = createLogger({
@@ -34,7 +36,7 @@ const logger = createLogger({
         process.cwd(),
         'winston',
         'success',
-        '%DATE%-success.log'
+        '%DATE%-success.log',
       ),
       datePattern: 'DD-MM-YYYY-HH',
       maxSize: '20m',
@@ -53,7 +55,7 @@ const errorLogger = createLogger({
         process.cwd(),
         'winston',
         'error',
-        '%DATE%-error.log'
+        '%DATE%-error.log',
       ),
       datePattern: 'DD-MM-YYYY-HH',
       maxSize: '20m',

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
 import { model, Schema } from 'mongoose';
@@ -31,30 +32,31 @@ const userSchema = new Schema<IUser, UserModal>(
     },
     phone: {
       type: String,
+      default: '',
     },
-    birthday:{
-      type:String,
+    birthday: {
+      type: String,
     },
     address: {
       type: String,
       default: '',
     },
-    school:{
-      type:String,
-      default:""
+    school: {
+      type: String,
+      default: '',
     },
-    groupLimit:{
-      type:Number,
-      default:0
+    groupLimit: {
+      type: Number,
+      default: 0,
     },
     image: {
       type: String,
       default:
         'https://www.shutterstock.com/shutterstock/photos/1153673752/display_1500/stock-vector-profile-placeholder-image-gray-silhouette-no-photo-1153673752.jpg',
     },
-    instagram:{
-      type:String,
-      default:''
+    instagram: {
+      type: String,
+      default: '',
     },
 
     status: {
@@ -62,16 +64,15 @@ const userSchema = new Schema<IUser, UserModal>(
       enum: ['active', 'delete'],
       default: 'active',
     },
-    gender:{
-        type: String,
-        enum: ["MALE", "FEMALE","OTHERS"],
-     
+    gender: {
+      type: String,
+      enum: ['MALE', 'FEMALE', 'OTHERS'],
     },
     verified: {
       type: Boolean,
       default: false,
     },
-  
+
     authentication: {
       type: {
         isResetPassword: {
@@ -90,7 +91,7 @@ const userSchema = new Schema<IUser, UserModal>(
       select: 0,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 //exist user check
@@ -113,7 +114,7 @@ userSchema.statics.isAccountCreated = async (id: string) => {
 //is match password
 userSchema.statics.isMatchPassword = async (
   password: string,
-  hashPassword: string
+  hashPassword: string,
 ): Promise<boolean> => {
   return await bcrypt.compare(password, hashPassword);
 };
@@ -129,7 +130,7 @@ userSchema.pre('save', async function (next) {
   //password hash
   this.password = await bcrypt.hash(
     this.password,
-    Number(config.bcrypt_salt_rounds)
+    Number(config.bcrypt_salt_rounds),
   );
   next();
 });

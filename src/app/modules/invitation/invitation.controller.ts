@@ -71,7 +71,19 @@ const responseInvitation = catchAsync(
   },
 );
 
+const getUserInvitation = catchAsync(async (req, res) => {
+  const result = await invitationService.getUserInvitation(req?.user?.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'you got those group invitation',
+    data: result,
+  });
+});
+
 export const invitationController = {
   sendInvitaion,
   responseInvitation,
+  getUserInvitation,
 };

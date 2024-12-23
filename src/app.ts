@@ -14,13 +14,10 @@ app.use(Morgan.errorHandler);
 //body parser
 app.use(
   cors({
-    origin: [
-      '*'
-    ],
+    origin: ['*'],
     credentials: true,
-  })
+  }),
 );
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,7 +31,7 @@ app.use('/api/v1', router);
 //live response
 app.get('/', (req: Request, res: Response) => {
   res.send(
-    '<h1 style="text-align:center; color:#A55FEF; font-family:Verdana;">Hey, How can I assist you today!</h1>'
+    '<h1 style="text-align:center; color:#A55FEF; font-family:Verdana;">Hey, How can I assist you today!</h1>',
   );
 });
 
@@ -49,7 +46,7 @@ app.use((req, res) => {
     errorMessages: [
       {
         path: req.originalUrl,
-        message: "API NOT FOUND",
+        message: 'API NOT FOUND',
       },
     ],
   });

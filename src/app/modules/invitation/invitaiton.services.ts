@@ -11,6 +11,7 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 import { Notification } from '../notifications/notifications.model';
+import mongoose from 'mongoose';
 
 const sendInvitaioin = async (
   senderGroupId: string,
@@ -72,6 +73,7 @@ const sendInvitaioin = async (
   const notificationPayload = {
     userId: existUser?._id,
     senderGroupId,
+    receiverGroupId,
     invitationId: result?._id,
     message: `you got a group invitation from this group ${result?._id}`,
   };
@@ -135,43 +137,70 @@ const responseInvitation = async (invitationId: string, response: string) => {
   return chatGroup;
 };
 
+const getUserInvitation = async (userId: string) => {
+  const existUser = await User.findById(userId);
+
+  if (!existUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this user not found');
+  }
+  const userIdObjectId = new mongoose.Types.ObjectId(userId);
+
+  const invitations = await Invitation.aggregate([
+    // Lookup to join the Group collection
+    {
+      $lookup: {
+        from: 'groups',
+        localField: 'receiverGroupId',
+        foreignField: '_id',
+        as: 'receiverGroup',
+      },
+    },
+    // Unwind the receiverGroup array
+    {
+      $unwind: '$receiverGroup',
+    },
+    // Match documents where the user exists in receiverGroup.invite
+    {
+      $match: {
+        'receiverGroup.invite': userIdObjectId,
+      },
+    },
+    // Lookup to populate userId
+    {
+      $lookup: {
+        from: 'users', // The name of the User collection
+        localField: 'userId', // Field in Invitation
+        foreignField: '_id', // Field in User
+        as: 'user', // Name of the joined field
+      },
+    },
+    // Unwind the user array
+    {
+      $unwind: {
+        path: '$user',
+        preserveNullAndEmptyArrays: true, // Allows handling of cases where userId may not exist
+      },
+    },
+    // Project fields to simplify the output
+    {
+      $project: {
+        _id: 1,
+        senderGroupId: 1,
+        receiverGroupId: 1,
+        'user._id': 1, // Include user details
+        'user.name': 1,
+        'user.email': 1,
+        status: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+  ]);
+  return invitations;
+};
+
 export const invitationService = {
   sendInvitaioin,
   responseInvitation,
+  getUserInvitation,
 };
-
-/*
-
-// const sendInvitaioin = async (payload: TInvitation) => {
-//   const result = await Invitation.create(payload);
-
-//   if (result.status === 'PENDING') {
-//     const data = {
-//       text: `You have invited `,
-//       receiver: payload.receiverGroupId,
-//     };
-
-//     await sendNotifications(data);
-//   }
-
-//   return result;
-// };
-
-// const updatedInvite = async (id: string, payload: TInvitation) => {
-//   const result = await Invitation.findByIdAndUpdate(
-//     { _id: id },
-//     { status: 'ACCEPTED' },
-//     { new: true },
-//   );
-
-//   const value = {
-//     group1: payload.senderGroupId,
-//     group2: payload.receiverGroupId,
-//   };
-
-//   await ChatGroup.create(value);
-
-//   return result;
-// };
-
-*/

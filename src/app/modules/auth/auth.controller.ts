@@ -34,8 +34,6 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
-
 const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   const email = req.body.email;
   const result = await AuthService.forgetPasswordToDB(email);
@@ -64,8 +62,6 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
 const changePassword = catchAsync(async (req: Request, res: Response) => {
   const user = req.user;
 
-
-  
   const { ...passwordData } = req.body;
   await AuthService.changePasswordToDB(user, passwordData);
 
@@ -111,7 +107,7 @@ const resendVerificationEmail = catchAsync(
       message: 'Generate OTP and send successfully',
       data: result,
     });
-  }
+  },
 );
 
 export const AuthController = {

@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type IFolderName = 'image' | 'media' | 'doc' | 'images' | 'medias' | 'docs';
 
 export const getFilePathMultiple = (
   files: any,
   fieldname: any,
-  folderName: IFolderName
+  folderName: IFolderName,
 ) => {
   let value: any;
   Object.entries(files).forEach(([key, _value]: any) => {

@@ -7,8 +7,14 @@ const router = express.Router();
 
 router.get(
   '/',
-  auth(USER_ROLES.USER),
-  NotificationController.getNotificationToDb,
+  auth(USER_ROLES.ADMIN),
+  NotificationController.getAllNotification,
+);
+
+router.get(
+  '/user-notification',
+  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  NotificationController.getUserNotification,
 );
 
 // router.patch(

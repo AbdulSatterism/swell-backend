@@ -41,22 +41,17 @@ const createUserFromDb = async (payload: IUser) => {
     throw new ApiError(StatusCodes.NOT_FOUND, 'User not found for update');
   }
 
-  // if (result.status === 'active') {
-  //   const data = {
-  //     text: `Registered successfully, ${result?.name}`,
-  //     type: 'ADMIN',
-  //   };
-
-  //   // await sendNotifications(data);
-  // }
-
   return result;
 };
 
 const getAllUsers = async () => {
   const result = await User.find();
+  const count = await User.countDocuments();
 
-  return result;
+  return {
+    result,
+    count,
+  };
 };
 
 const getUserProfileFromDB = async (

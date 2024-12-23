@@ -8,6 +8,8 @@ import { NotificationRoutes } from '../app/modules/notifications/notifications.r
 import { settingRoutes } from '../app/modules/setting/setting.route';
 import { messageRoutes } from '../app/modules/message/message.route';
 import { chatGroupRoutes } from '../app/modules/chatGroup/chatGroup.route';
+import { privacyRoutes } from '../app/modules/privacy/privacy.routes';
+import { aboutRoutes } from '../app/modules/aboutUs/aboutUs.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -17,8 +19,10 @@ const apiRoutes = [
   { path: '/chat', route: chatGroupRoutes },
   { path: '/invite', route: invitatioinRoutes },
   { path: '/notification', route: NotificationRoutes },
-  { path: '/setting', route: settingRoutes },
   { path: '/message', route: messageRoutes },
+  { path: '/setting', route: settingRoutes },
+  { path: '/privacy', route: privacyRoutes },
+  { path: '/about', route: aboutRoutes },
 ];
 
 apiRoutes.forEach(route => router.use(route.path, route.route));
