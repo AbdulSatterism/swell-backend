@@ -17,7 +17,7 @@ router.post(
 
 router.get('/all-user', auth(USER_ROLES.ADMIN), UserController.getAllUser);
 
-router.patch(
+router.post(
   '/update-profile',
   fileUploadHandler(),
   auth(USER_ROLES.USER, USER_ROLES.ADMIN),

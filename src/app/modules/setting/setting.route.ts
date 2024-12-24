@@ -17,7 +17,7 @@ router.post(
 
 router.get('/', settingControllers.getAllSetting);
 
-router.patch(
+router.post(
   '/update-setting',
   auth(USER_ROLES.ADMIN),
   validateRequest(settingValidaitons.updateSettingValidation),

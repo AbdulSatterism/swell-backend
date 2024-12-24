@@ -17,7 +17,7 @@ router.post(
 
 router.get('/', privacyControllers.getAllPrivacy);
 
-router.patch(
+router.post(
   '/update-privacy',
   auth(USER_ROLES.ADMIN),
   validateRequest(privacyValidations.updatePrivacyValidation),

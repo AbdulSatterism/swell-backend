@@ -64,7 +64,7 @@ router.get(
 );
 
 // leave from group
-router.patch(
+router.post(
   '/user-leave',
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
   groupController.leaveFromGroup,
