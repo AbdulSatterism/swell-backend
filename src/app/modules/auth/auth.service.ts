@@ -128,13 +128,33 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
   let message;
   let data;
 
+  const tokenPayload = {
+    id: isExistUser._id,
+    role: isExistUser.role,
+    email: isExistUser.email,
+  };
+
+  //create access token
+  const accessToken = jwtHelper.createToken(
+    tokenPayload,
+    config.jwt.jwt_secret as Secret,
+    config.jwt.jwt_expire_in as string,
+  );
+
+  //create refresh token
+  const refreshToken = jwtHelper.createToken(
+    tokenPayload,
+    config.jwt.jwtRefreshSecret as Secret,
+    config.jwt.jwtRefreshExpiresIn as string,
+  );
+
   if (!isExistUser.verified) {
     await User.findOneAndUpdate(
       { _id: isExistUser._id },
       { verified: true, authentication: { oneTimeCode: null, expireAt: null } },
     );
-    message =
-      'Your email has been successfully verified. Your account is now fully activated.';
+    message = 'Your email has been successfully verified.';
+    data = { accessToken, refreshToken };
   } else {
     await User.findOneAndUpdate(
       { _id: isExistUser._id },
@@ -154,8 +174,7 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
       token: createToken,
       expireAt: new Date(Date.now() + 5 * 60000),
     });
-    message =
-      'Verification Successful: Please securely store and utilize this code for reset password';
+    message = 'Verification Successful';
     data = createToken;
   }
   return { data, message };
