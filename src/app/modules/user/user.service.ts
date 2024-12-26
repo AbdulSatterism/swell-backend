@@ -101,18 +101,19 @@ const getSingleUser = async (id: string): Promise<IUser | null> => {
 };
 
 // search user by phone
-const searchUserByPhone = async (searchTerm: string) => {
-  if (!searchTerm) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      'please search by phone number',
-    );
-  }
+const searchUserByPhone = async (searchTerm: string, userId: string) => {
+  let result;
 
-  // Find users with partial phone number match using regex
-  const result = await User.find({
-    phone: { $regex: searchTerm, $options: 'i' },
-  });
+  if (searchTerm) {
+    // Find users with partial phone number match using regex, excluding the logged-in user
+    result = await User.find({
+      phone: { $regex: searchTerm, $options: 'i' },
+      _id: { $ne: userId }, // Exclude the logged-in user
+    });
+  } else {
+    // Retrieve 10 users, excluding the logged-in user
+    result = await User.find({ _id: { $ne: userId } }).limit(10);
+  }
 
   return result;
 };

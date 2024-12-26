@@ -13,7 +13,7 @@ const createMessage = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'message send ok',
+      message: 'message send',
       data: result,
     });
   },
