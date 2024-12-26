@@ -13,7 +13,7 @@ import {
   ILoginData,
   IVerifyEmail,
 } from '../../../types/auth';
-import cryptoToken from '../../../util/cryptoToken';
+// import cryptoToken from '../../../util/cryptoToken';
 import generateOTP from '../../../util/generateOTP';
 
 import { User } from '../user/user.model';
@@ -186,6 +186,7 @@ const forgetPasswordToDB = async (email: string) => {
 
 const verifyEmailToDB = async (payload: IVerifyEmail) => {
   const { email, oneTimeCode } = payload;
+
   const isExistUser = await User.findOne({ email }).select('+authentication');
   if (!isExistUser) {
     throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
@@ -198,6 +199,7 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
     );
   }
 
+  // console.log(isExistUser.authentication?.oneTimeCode, { payload });
   if (isExistUser.authentication?.oneTimeCode !== oneTimeCode) {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'You provided wrong otp');
   }
@@ -254,15 +256,26 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
     );
 
     //create token ;
-    const createToken = cryptoToken();
+    //   const createToken = cryptoToken();
+    //   await ResetToken.create({
+    //     user: isExistUser._id,
+    //     token: createToken,
+    //     expireAt: new Date(Date.now() + 20 * 60000),
+    //   });
+    //   message =
+    //     'Verification Successful: Please securely store and utilize this code for reset password';
+    //   data = createToken;
+    // }
+
+    // const createToken = cryptoToken();
     await ResetToken.create({
       user: isExistUser._id,
-      token: createToken,
+      token: accessToken,
       expireAt: new Date(Date.now() + 20 * 60000),
     });
     message =
       'Verification Successful: Please securely store and utilize this code for reset password';
-    data = createToken;
+    data = { accessToken, refreshToken };
   }
 
   // generate token

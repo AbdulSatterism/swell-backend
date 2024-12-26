@@ -111,10 +111,6 @@ const searchUserByPhone = async (searchTerm: string) => {
     phone: { $regex: searchTerm, $options: 'i' },
   });
 
-  if (!result.length) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'user not found by this number');
-  }
-
   return result;
 };
 
