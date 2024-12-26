@@ -30,3 +30,11 @@ export type UserModal = {
   isAccountCreated(id: string): any;
   isMatchPassword(password: string, hashPassword: string): boolean;
 } & Model<IUser>;
+
+/*
+  authentication?: {
+    isResetPassword: boolean;
+    oneTimeCode: number;
+    expireAt: Date;
+  };
+  */

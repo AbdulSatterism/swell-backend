@@ -31,7 +31,7 @@ const createUserFromDb = async (payload: IUser) => {
   // Update user with authentication details
   const authentication = {
     oneTimeCode: otp,
-    expireAt: new Date(Date.now() + 3 * 60000),
+    expireAt: new Date(Date.now() + 20 * 60000),
   };
   const updatedUser = await User.findOneAndUpdate(
     { _id: result._id },
