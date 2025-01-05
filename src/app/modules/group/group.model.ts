@@ -18,6 +18,11 @@ const groupSchema: Schema = new Schema<TGroup>(
       required: true,
       ref: 'User',
     },
+
+    description: {
+      type: String,
+      required: true,
+    },
     coverPhoto: {
       type: String,
     },

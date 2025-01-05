@@ -7,6 +7,7 @@ export type TGroup = {
   coverPhoto: string;
   address: string;
   bio: string;
+  description: string;
   gender: 'MALE' | 'FEMALE' | 'OTHERS';
   location: {
     type: 'Point';

@@ -5,6 +5,7 @@ import catchAsync from '../../../shared/catchAsync';
 import { groupServices } from './group.service';
 import sendResponse from '../../../shared/sendResponse';
 import { StatusCodes } from 'http-status-codes';
+import { group } from 'console';
 
 //create group
 const createGroup = catchAsync(
@@ -57,18 +58,21 @@ const myAllJoinedGroup = catchAsync(async (req, res) => {
 });
 
 // nearest all group
-const getNearestGroup = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await groupServices.getNearestAllGroup(req.user.id);
+const getNearestGroup = catchAsync(async (req, res) => {
+  const groupId = req.query.groupId;
+  const userId = req.user.id;
+  const result = await groupServices.getNearestAllGroup(
+    groupId as string,
+    userId,
+  );
 
-    sendResponse(res, {
-      success: true,
-      statusCode: StatusCodes.OK,
-      message: 'all nearest group by coresponding user group',
-      data: result,
-    });
-  },
-);
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'all nearest group by coresponding user',
+    data: result,
+  });
+});
 
 const leaveFromGroup = catchAsync(async (req, res) => {
   const { groupId, userId } = req.body;

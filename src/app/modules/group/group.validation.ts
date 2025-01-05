@@ -4,6 +4,7 @@ const createGroupValidationSchema = z.object({
   createdBy: z.string(),
   invite: z.array(z.string()),
   address: z.string(),
+  description: z.string(),
   bio: z.string(),
   gender: z.enum(['MALE', 'FEMALE', 'OTHERS']),
   location: z.object({

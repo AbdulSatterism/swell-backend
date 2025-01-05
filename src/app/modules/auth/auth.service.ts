@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import bcrypt from 'bcrypt';
 import { StatusCodes } from 'http-status-codes';
@@ -71,7 +73,10 @@ const loginUserFromDB = async (payload: ILoginData) => {
     config.jwt.jwtRefreshExpiresIn as string,
   );
 
-  return { accessToken, refreshToken };
+  // send user data without password
+  const { password: _, ...userWithoutPassword } = isExistUser.toObject();
+
+  return { user: userWithoutPassword, accessToken, refreshToken };
 };
 
 //forget password
@@ -240,9 +245,8 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
       { _id: isExistUser._id },
       { verified: true, authentication: { oneTimeCode: null, expireAt: null } },
     );
-    message =
-      'Your email has been successfully verified. Your account is now fully activated.';
-    data = { accessToken, refreshToken };
+    message = 'Your email has been successfully verified.';
+    data = { user: isExistUser, accessToken, refreshToken };
   } else {
     await User.findOneAndUpdate(
       { _id: isExistUser._id },
@@ -255,36 +259,15 @@ const verifyEmailToDB = async (payload: IVerifyEmail) => {
       },
     );
 
-    //create token ;
-    //   const createToken = cryptoToken();
-    //   await ResetToken.create({
-    //     user: isExistUser._id,
-    //     token: createToken,
-    //     expireAt: new Date(Date.now() + 20 * 60000),
-    //   });
-    //   message =
-    //     'Verification Successful: Please securely store and utilize this code for reset password';
-    //   data = createToken;
-    // }
-
     // const createToken = cryptoToken();
     await ResetToken.create({
       user: isExistUser._id,
       token: accessToken,
       expireAt: new Date(Date.now() + 20 * 60000),
     });
-    message =
-      'Verification Successful: Please securely store and utilize this code for reset password';
-    data = { accessToken, refreshToken };
+    message = 'Verification Successful';
+    data = { user: isExistUser, accessToken, refreshToken };
   }
-
-  // generate token
-
-  // const tokens = jwtHelper.createToken(
-  //   { email: isExistUser.email, id: isExistUser._id, role: isExistUser.role },
-  //   config.jwt.jwt_secret as Secret,
-  //   '15d',
-  // );
 
   return { data, message };
 };
