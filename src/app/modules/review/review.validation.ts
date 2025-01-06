@@ -3,7 +3,6 @@ import { z } from 'zod';
 const createReviewValidation = z.object({
   body: z.object({
     comment: z.string(),
-    userId: z.string(),
   }),
 });
 

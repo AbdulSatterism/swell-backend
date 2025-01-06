@@ -4,6 +4,7 @@ import ApiError from '../../../errors/ApiError';
 import { StatusCodes } from 'http-status-codes';
 import { Group } from './group.model';
 import mongoose from 'mongoose';
+import { HiddenGroup } from '../hiddenGroup/hiddenGroup.model';
 
 const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
   const { createdBy, invite } = payload;
@@ -120,20 +121,18 @@ const myAllJoinedGroup = async (userId: string) => {
 };
 
 // const getNearestAllGroup = async (groupId: string, userId: string) => {
-//   // const existGroup = await Group.findOne({ createdBy: userId });
-//   //find group by group id
+//   // Find the reference group by groupId
 //   const existGroup = await Group.findById(groupId);
 
 //   if (!existGroup) {
-//     throw new ApiError(StatusCodes.NOT_FOUND, 'group not found');
+//     throw new ApiError(StatusCodes.NOT_FOUND, 'Group not found');
 //   }
+//   const userObjectId = new mongoose.Types.ObjectId(userId);
+//   // Extract longitude and latitude from the reference group's location
+//   const longitude = existGroup.location.coordinates[0];
+//   const latitude = existGroup.location.coordinates[1];
 
-//   // set default longitute and latitude by group user
-
-//   const longitude = existGroup?.location.coordinates[0];
-//   const latitude = existGroup?.location.coordinates[1];
-
-//   // Perform geospatial aggregation
+//   // Perform geospatial aggregation to find nearby groups and exclude groups with the userId in invite[]
 //   const nearestGroups = await Group.aggregate([
 //     {
 //       $geoNear: {
@@ -147,10 +146,31 @@ const myAllJoinedGroup = async (userId: string) => {
 //       },
 //     },
 //     {
+//       $match: {
+//         invite: { $ne: userObjectId }, // Exclude groups where invite[] contains userId
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: 'users', // The name of the collection to join with
+//         localField: 'invite', // Field in the current collection (Group) that holds references
+//         foreignField: '_id', // Field in the foreign collection (User) that matches
+//         as: 'invite', // Name of the new field to add the populated data
+//         pipeline: [
+//           {
+//             $project: {
+//               password: 0, // Exclude the password field
+//             },
+//           },
+//         ],
+//       },
+//     },
+//     {
 //       $project: {
 //         groupName: 1,
 //         createdBy: 1,
 //         invite: 1,
+
 //         coverPhoto: 1,
 //         address: 1,
 //         bio: 1,
@@ -162,12 +182,15 @@ const myAllJoinedGroup = async (userId: string) => {
 //       },
 //     },
 //     {
-//       $sort: { distance: 1 }, // Sort from closest to farthest
+//       $sort: { distance: 1 }, // Sort groups by distance (closest first)
 //     },
 //   ]);
 
 //   return nearestGroups;
 // };
+
+// exclude with hiddenGroup for coresponding groupid
+
 const getNearestAllGroup = async (groupId: string, userId: string) => {
   // Find the reference group by groupId
   const existGroup = await Group.findById(groupId);
@@ -175,12 +198,21 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
   if (!existGroup) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Group not found');
   }
+
   const userObjectId = new mongoose.Types.ObjectId(userId);
+
   // Extract longitude and latitude from the reference group's location
   const longitude = existGroup.location.coordinates[0];
   const latitude = existGroup.location.coordinates[1];
 
-  // Perform geospatial aggregation to find nearby groups and exclude groups with the userId in invite[]
+  // Fetch hidden groups for the given groupId
+  const hiddenGroups = await HiddenGroup.find({
+    hiddenByGroup: groupId,
+  }).select('hiddenGroup');
+  const hiddenGroupIds = hiddenGroups.map(doc => doc.hiddenGroup);
+
+  // Perform geospatial aggregation to find nearby groups, exclude groups with the userId in invite[],
+  // and exclude hidden groups
   const nearestGroups = await Group.aggregate([
     {
       $geoNear: {
@@ -195,6 +227,7 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
     },
     {
       $match: {
+        _id: { $nin: hiddenGroupIds }, // Exclude hidden groups
         invite: { $ne: userObjectId }, // Exclude groups where invite[] contains userId
       },
     },
@@ -218,7 +251,6 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
         groupName: 1,
         createdBy: 1,
         invite: 1,
-
         coverPhoto: 1,
         address: 1,
         bio: 1,
@@ -234,70 +266,8 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
     },
   ]);
 
-  // await Group.updateMany(
-  //   {},
-  //   {
-  //     $set: {
-  //       description: 'description added', // Add the new field with a default value
-  //     },
-  //   },
-  // );
-
   return nearestGroups;
 };
-
-// const getNearestAllGroup = async (groupId: string, userId: string) => {
-//   // Find the reference group by groupId
-//   const existGroup = await Group.findById(groupId);
-
-//   if (!existGroup) {
-//     throw new ApiError(StatusCodes.NOT_FOUND, 'Group not found');
-//   }
-
-//   // Extract longitude and latitude from the reference group's location
-//   const longitude = existGroup.location.coordinates[0];
-//   const latitude = existGroup.location.coordinates[1];
-
-//   // Perform geospatial aggregation to find nearby groups and filter by userId in invite[]
-//   const nearestGroups = await Group.aggregate([
-//     {
-//       $geoNear: {
-//         near: {
-//           type: 'Point',
-//           coordinates: [longitude, latitude],
-//         },
-//         distanceField: 'distance',
-//         spherical: true,
-//         distanceMultiplier: 0.001, // Convert meters to kilometers
-//       },
-//     },
-//     {
-//       $match: {
-//         invite: { $ne: userId }, // Exclude groups where invite[] contains userId
-//       },
-//     },
-//     {
-//       $project: {
-//         groupName: 1,
-//         createdBy: 1,
-//         invite: 1,
-//         coverPhoto: 1,
-//         address: 1,
-//         bio: 1,
-//         gender: 1,
-//         location: 1,
-//         distance: 1,
-//         createdAt: 1,
-//         updatedAt: 1,
-//       },
-//     },
-//     {
-//       $sort: { distance: 1 }, // Sort groups by distance (closest first)
-//     },
-//   ]);
-
-//   return nearestGroups;
-// };
 
 const leaveFromGroup = async (groupId: string, userId: string) => {
   const isExistUser = await User.isExistUserById(userId);

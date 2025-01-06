@@ -1,27 +1,26 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import express from 'express';
-// import { USER_ROLES } from '../../../enums/user';
-// import auth from '../../middlewares/auth';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import express from 'express';
+import { USER_ROLES } from '../../../enums/user';
+import auth from '../../middlewares/auth';
 
-// import validateRequest from '../../middlewares/validateRequest';
-// import { settingValidaitons } from './setting.validation';
-// import { settingControllers } from './setting.controller';
-// const router = express.Router();
+import validateRequest from '../../middlewares/validateRequest';
+import { reviewValidations } from './review.validation';
+import { reviewControllers } from './review.controller';
+const router = express.Router();
 
-// router.post(
-//   '/create-setting',
-//   auth(USER_ROLES.ADMIN),
-//   validateRequest(settingValidaitons.createSettingValidation),
-//   settingControllers.createSetting,
-// );
+router.post(
+  '/create-review',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  validateRequest(reviewValidations.createReviewValidation),
+  reviewControllers.createReview,
+);
 
-// router.get('/', settingControllers.getAllSetting);
+router.get('/', auth(USER_ROLES.ADMIN), reviewControllers.getAllReviewByAdmin);
 
-// router.post(
-//   '/update-setting',
-//   auth(USER_ROLES.ADMIN),
-//   validateRequest(settingValidaitons.updateSettingValidation),
-//   settingControllers.updateSetting,
-// );
+router.post(
+  '/review-delete/:id',
+  auth(USER_ROLES.ADMIN),
+  reviewControllers.deleteReviewByAdmin,
+);
 
-// export const settingRoutes = router;
+export const reviewRoutes = router;

@@ -10,6 +10,8 @@ import { messageRoutes } from '../app/modules/message/message.route';
 import { chatGroupRoutes } from '../app/modules/chatGroup/chatGroup.route';
 import { privacyRoutes } from '../app/modules/privacy/privacy.routes';
 import { aboutRoutes } from '../app/modules/aboutUs/aboutUs.route';
+import { reviewRoutes } from '../app/modules/review/review.route';
+import { hiddenGroupRoutes } from '../app/modules/hiddenGroup/hiddenGroup.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -23,6 +25,8 @@ const apiRoutes = [
   { path: '/setting', route: settingRoutes },
   { path: '/privacy', route: privacyRoutes },
   { path: '/about', route: aboutRoutes },
+  { path: '/review', route: reviewRoutes },
+  { path: '/hidden', route: hiddenGroupRoutes },
 ];
 
 apiRoutes.forEach(route => router.use(route.path, route.route));

@@ -1,51 +1,45 @@
 // /* eslint-disable @typescript-eslint/no-unused-vars */
 // /* eslint-disable no-unused-vars */
-// import { NextFunction, Request, Response } from 'express';
-// import catchAsync from '../../../shared/catchAsync';
-// import { StatusCodes } from 'http-status-codes';
-// import sendResponse from '../../../shared/sendResponse';
-// import { settingServices } from './setting.service';
+import catchAsync from '../../../shared/catchAsync';
+import { StatusCodes } from 'http-status-codes';
+import sendResponse from '../../../shared/sendResponse';
+import { reviewServices } from './review.services';
 
-// const createSetting = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const result = await settingServices.createSetting(req.body);
+const createReview = catchAsync(async (req, res) => {
+  const { id } = req.user;
+  const result = await reviewServices.createReview(id, req.body);
 
-//     sendResponse(res, {
-//       success: true,
-//       statusCode: StatusCodes.OK,
-//       message: 'setting created succefully',
-//       data: result,
-//     });
-//   },
-// );
-// const getAllSetting = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const result = await settingServices.getAllSetting();
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'review created succefully',
+    data: result,
+  });
+});
+const getAllReviewByAdmin = catchAsync(async (req, res) => {
+  const result = await reviewServices.getAllReviewByAdmin();
 
-//     sendResponse(res, {
-//       success: true,
-//       statusCode: StatusCodes.OK,
-//       message: 'setting retrieve succefully',
-//       data: result,
-//     });
-//   },
-// );
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'all review retrieve succefully',
+    data: result,
+  });
+});
 
-// const updateSetting = catchAsync(
-//   async (req: Request, res: Response, next: NextFunction) => {
-//     const result = await settingServices.updateSetting(req.body);
+const deleteReviewByAdmin = catchAsync(async (req, res) => {
+  const result = await reviewServices.deleteReviewByAdmin(req.params.id);
 
-//     sendResponse(res, {
-//       success: true,
-//       statusCode: StatusCodes.OK,
-//       message: 'setting updated succefully',
-//       data: result,
-//     });
-//   },
-// );
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'review deleted succefully',
+    data: result,
+  });
+});
 
-// export const settingControllers = {
-//   createSetting,
-//   updateSetting,
-//   getAllSetting,
-// };
+export const reviewControllers = {
+  createReview,
+  getAllReviewByAdmin,
+  deleteReviewByAdmin,
+};

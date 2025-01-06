@@ -1,38 +1,46 @@
-// import { StatusCodes } from 'http-status-codes';
-// import ApiError from '../../../errors/ApiError';
-// import { TReview } from './review.interface';
-// import { Review } from './review.model';
-// import { User } from '../user/user.model';
+import { StatusCodes } from 'http-status-codes';
+import mongoose from 'mongoose';
+import ApiError from '../../../errors/ApiError';
+import { TReview } from './review.interface';
+import { Review } from './review.model';
+import { User } from '../user/user.model';
 
-// const createReview = async (payload: TReview) => {
-//   const { userId } = payload;
+const createReview = async (userId: string, payload: Partial<TReview>) => {
+  payload.userId = new mongoose.Types.ObjectId(userId);
 
-//   //   const isExistUser = await User.isExistUserById(userId as unknown as string);
-//   //   if (!isExistUser) {
-//   //     throw new ApiError(StatusCodes.NOT_FOUND, 'user not found');
-//   //   }
-//   const result = await Review.create(payload);
+  const isExistUser = await User.isExistUserById(userId);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this user  not found');
+  }
 
-//   return result;
-// };
+  const result = await Review.create(payload);
 
-// // const getAllSetting = async () => {
-// //   const result = await Setting.find();
+  return result;
+};
 
-// //   return result;
-// // };
+const getAllReviewByAdmin = async () => {
+  const result = await Review.find().populate(
+    'userId',
+    'name email phone image',
+  );
 
-// // const updateSetting = async (payload: TSetting) => {
-// //   const result = await Setting.findOneAndUpdate(
-// //     {},
-// //     { description: payload.description },
-// //     { new: true },
-// //   );
+  return result;
+};
 
-// //   return result;
-// // };
+const deleteReviewByAdmin = async (id: string) => {
+  const isExistReview = await Review.findById(id);
 
-// export const settingServices = {
-//   createSetting: createReview,
-//   //   getAllSetting,
-// };
+  if (!isExistReview) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this review not found');
+  }
+
+  const result = await Review.findByIdAndDelete(id, { new: true });
+
+  return result;
+};
+
+export const reviewServices = {
+  createReview,
+  getAllReviewByAdmin,
+  deleteReviewByAdmin,
+};
