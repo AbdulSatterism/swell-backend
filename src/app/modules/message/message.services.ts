@@ -20,12 +20,14 @@ const createMessageIntoGroup = async (payload: TMessage) => {
   //roomId will be between two group id => senderGroupId-receiverGroupId like 12456-254782
   const chatRoom = payload.roomId;
 
-  const newMessage = await Message.create(payload);
-
+  //emit the message to the specific
   socketIo.emit(`new-message:${chatRoom}`, {
     senderId: payload.senderId,
     message: payload.message,
   });
+
+  //after sending message to socket we will save the message in database
+  const newMessage = await Message.create(payload);
 
   return newMessage; // Return the result after successful creation
 };
@@ -42,7 +44,7 @@ const showAllMessageSpeceficGroup = async (roomId: string) => {
     .sort({ createdAt: 1 });
 
   // if message is read then update the read field to true
-  await Message.updateMany({ roomId, read: true }, { read: true });
+  await Message.updateMany({ roomId, read: false }, { read: true });
 
   return messages;
 };
