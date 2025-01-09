@@ -41,10 +41,28 @@ const showAllMessageSpeceficGroup = async (roomId: string) => {
     .populate('senderId', 'name email image') // Populate sender details (e.g., name, email)
     .sort({ createdAt: 1 });
 
+  // if message is read then update the read field to true
+  await Message.updateMany({ roomId, read: true }, { read: true });
+
   return messages;
+};
+
+const totalUnreadMessageSpecificGroup = async (roomId: string) => {
+  const existChatGroup = await ChatGroup.findOne({ roomId });
+
+  if (!existChatGroup) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
+  }
+
+  // Find messages in the room with 'read' field set to false
+  const unreadCount = await Message.countDocuments({ roomId, read: false });
+
+  // Return the total count of unread messages
+  return unreadCount;
 };
 
 export const messageServices = {
   createMessageIntoGroup,
   showAllMessageSpeceficGroup,
+  totalUnreadMessageSpecificGroup,
 };

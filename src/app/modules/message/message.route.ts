@@ -20,5 +20,10 @@ router.get(
   auth(USER_ROLES.ADMIN, USER_ROLES.USER),
   messageControllers.showAllMessageSpeceficGroup,
 );
+router.get(
+  '/unread-message/:roomId',
+  auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  messageControllers.totalUnreadMessageSpecificGroup,
+);
 
 export const messageRoutes = router;

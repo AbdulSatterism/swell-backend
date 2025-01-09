@@ -32,7 +32,21 @@ const showAllMessageSpeceficGroup = catchAsync(async (req, res) => {
   });
 });
 
+const totalUnreadMessageSpecificGroup = catchAsync(async (req, res) => {
+  const result = await messageServices.totalUnreadMessageSpecificGroup(
+    req.params.roomId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'unread message',
+    data: result,
+  });
+});
+
 export const messageControllers = {
   createMessage,
   showAllMessageSpeceficGroup,
+  totalUnreadMessageSpecificGroup,
 };
