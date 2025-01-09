@@ -74,6 +74,34 @@ const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
   }
 };
 
+const getSingleGroup = async (groupId: string) => {
+  const result = await Group.findById({ _id: groupId }).populate({
+    path: 'invite createdBy',
+    select: 'name image email',
+  });
+
+  return result;
+};
+
+const updateGroupProfile = async (
+  groupId: string,
+  payload: Partial<TGroup>,
+) => {
+  const groupExist = await Group.findById({ _id: groupId });
+
+  if (!groupExist) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'Group not found');
+  }
+
+  // update group profile
+
+  const result = await Group.findByIdAndUpdate({ _id: groupId }, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 const allGroupSpecificUser = async (userId: string) => {
   const isExistUser = await User.isExistUserById(userId);
 
@@ -85,13 +113,6 @@ const allGroupSpecificUser = async (userId: string) => {
     path: 'invite',
     select: 'name image email',
   });
-
-  if (!specificUserGroup.length) {
-    throw new ApiError(
-      StatusCodes.NOT_FOUND,
-      'This user has no group avail able',
-    );
-  }
 
   return specificUserGroup;
 };
@@ -303,4 +324,6 @@ export const groupServices = {
   getNearestAllGroup,
   myAllJoinedGroup,
   leaveFromGroup,
+  getSingleGroup,
+  updateGroupProfile,
 };

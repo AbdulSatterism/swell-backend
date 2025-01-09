@@ -46,6 +46,31 @@ const getSpecificGroup = catchAsync(
   },
 );
 
+const getSingleGroup = catchAsync(async (req, res) => {
+  const result = await groupServices.getSingleGroup(req.params.groupId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'retrieved single group',
+    data: result,
+  });
+});
+
+const groupUpdate = catchAsync(async (req, res) => {
+  const result = await groupServices.updateGroupProfile(
+    req.params.groupId,
+    req.body,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'group updated successfully',
+    data: result,
+  });
+});
+
 const myAllJoinedGroup = catchAsync(async (req, res) => {
   const result = await groupServices.myAllJoinedGroup(req.user.id);
 
@@ -111,4 +136,6 @@ export const groupController = {
   getNearestGroup,
   myAllJoinedGroup,
   leaveFromGroup,
+  getSingleGroup,
+  groupUpdate,
 };

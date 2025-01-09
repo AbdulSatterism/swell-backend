@@ -227,9 +227,36 @@ const getGroupInvitation = async (groupId: string) => {
 
   const groupObjectId = new mongoose.Types.ObjectId(groupId);
 
+  // const invitations = await Invitation.find({
+  //   receiverGroupId: groupObjectId,
+  // })
+  //   .populate('senderGroupId userId')
+  //   .populate({
+  //     path: 'receiverGroupId',
+  //     populate: {
+  //       path: 'invite',
+  //       model: 'User',
+  //     },
+  //   });
+
   const invitations = await Invitation.find({
     receiverGroupId: groupObjectId,
-  }).populate('senderGroupId receiverGroupId userId');
+  })
+    .populate('userId') // Populate userId
+    .populate({
+      path: 'senderGroupId', // Populate senderGroupId
+      populate: {
+        path: 'invite', // Populate the invite array within senderGroupId
+        model: 'User',
+      },
+    })
+    .populate({
+      path: 'receiverGroupId', // Populate receiverGroupId
+      populate: {
+        path: 'invite', // Populate the invite array within receiverGroupId
+        model: 'User',
+      },
+    });
 
   return invitations;
 };

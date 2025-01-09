@@ -13,6 +13,14 @@ const createGroupValidationSchema = z.object({
   }),
 });
 
+const updateGroupValidationSchema = z.object({
+  address: z.string().optional(),
+  description: z.string().optional(),
+  bio: z.string().optional(),
+  Image: z.string().optional(),
+  groupName: z.string().optional(),
+});
+
 const leaveGroupValidationSchema = z.object({
   body: z.object({
     roomId: z.string(),
@@ -23,4 +31,5 @@ const leaveGroupValidationSchema = z.object({
 export const groupValidations = {
   createGroupValidationSchema,
   leaveGroupValidationSchema,
+  updateGroupValidationSchema,
 };
