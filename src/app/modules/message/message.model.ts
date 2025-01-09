@@ -10,7 +10,7 @@ const messageSchema = new Schema<TMessage>(
     senderId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 
     // Group ID to which the message belongs
-    // groupId: { type: Schema.Types.ObjectId, ref: 'ChatGroup', required: true },
+    groupId: { type: Schema.Types.ObjectId, ref: 'ChatGroup', required: true },
     message: { type: String, required: true },
     read: { type: Boolean, default: false },
   },

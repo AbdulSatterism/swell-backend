@@ -3,12 +3,16 @@ import { THiddenGroup } from './hiddenGroup.interface';
 
 const hiddenGroupSchema = new Schema<THiddenGroup>(
   {
-    hiddenByGroup: {
+    hiddenByGroupId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'Group',
     },
-    hiddenGroup: { type: Schema.Types.ObjectId, required: true, ref: 'Group' },
+    hiddenGroupId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'Group',
+    },
   },
   { timestamps: true },
 );

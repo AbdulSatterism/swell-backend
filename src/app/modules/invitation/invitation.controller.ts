@@ -65,7 +65,9 @@ const responseInvitation = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'invitation accepted and anable for chatting',
+      message: result
+        ? `invitation accepted and anable for chatting`
+        : 'invitation rejected',
       data: result,
     });
   },
@@ -82,8 +84,22 @@ const getUserInvitation = catchAsync(async (req, res) => {
   });
 });
 
+const getGroupInvitation = catchAsync(async (req, res) => {
+  const result = await invitationService.getGroupInvitation(
+    req?.params?.groupId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'got those group invitation',
+    data: result,
+  });
+});
+
 export const invitationController = {
   sendInvitaion,
   responseInvitation,
   getUserInvitation,
+  getGroupInvitation,
 };

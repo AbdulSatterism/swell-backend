@@ -12,6 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 import { User } from '../user/user.model';
 import { Notification } from '../notifications/notifications.model';
 import mongoose from 'mongoose';
+import { group } from 'console';
 
 const sendInvitaioin = async (
   senderGroupId: string,
@@ -174,6 +175,22 @@ const getUserInvitation = async (userId: string) => {
         as: 'user', // Name of the joined field
       },
     },
+
+    {
+      $lookup: {
+        from: 'groups',
+        localField: 'senderGroupId',
+        foreignField: '_id',
+        as: 'senderGroup',
+      },
+    },
+    // Unwind the senderGroup array
+    {
+      $unwind: {
+        path: '$senderGroup',
+        preserveNullAndEmptyArrays: true, // Allows handling of cases where senderGroupId may not exist
+      },
+    },
     // Unwind the user array
     {
       $unwind: {
@@ -181,15 +198,17 @@ const getUserInvitation = async (userId: string) => {
         preserveNullAndEmptyArrays: true, // Allows handling of cases where userId may not exist
       },
     },
+
     // Project fields to simplify the output
     {
       $project: {
         _id: 1,
-        senderGroupId: 1,
+        senderGroup: 1,
         receiverGroupId: 1,
         'user._id': 1, // Include user details
         'user.name': 1,
         'user.email': 1,
+        'user.image': 1,
         status: 1,
         createdAt: 1,
         updatedAt: 1,
@@ -199,8 +218,25 @@ const getUserInvitation = async (userId: string) => {
   return invitations;
 };
 
+const getGroupInvitation = async (groupId: string) => {
+  const existGroup = await Group.findById(groupId);
+
+  if (!existGroup) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'group not found');
+  }
+
+  const groupObjectId = new mongoose.Types.ObjectId(groupId);
+
+  const invitations = await Invitation.find({
+    receiverGroupId: groupObjectId,
+  }).populate('senderGroupId receiverGroupId userId');
+
+  return invitations;
+};
+
 export const invitationService = {
   sendInvitaioin,
   responseInvitation,
   getUserInvitation,
+  getGroupInvitation,
 };

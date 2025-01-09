@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 
 export type THiddenGroup = {
-  hiddenByGroup: Types.ObjectId;
-  hiddenGroup: Types.ObjectId;
+  hiddenByGroupId: Types.ObjectId;
+  hiddenGroupId: Types.ObjectId;
 };

@@ -29,6 +29,11 @@ router.get(
   invitationController.getUserInvitation,
 );
 
+router.get(
+  '/group-invitation/:groupId',
+  invitationController.getGroupInvitation,
+);
+
 // router.post('/updated/:id', invitationController.updatedInvited);
 
 export const invitatioinRoutes = router;

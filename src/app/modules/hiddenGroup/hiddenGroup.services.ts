@@ -5,10 +5,10 @@ import ApiError from '../../../errors/ApiError';
 import { HiddenGroup } from './hiddenGroup.model';
 
 const createHiddenGroup = async (payload: THiddenGroup) => {
-  const { hiddenByGroup, hiddenGroup } = payload;
+  const { hiddenByGroupId, hiddenGroupId } = payload;
 
-  const isExistHiddenByGroup = await Group.findById(hiddenByGroup);
-  const isExishiddenGroup = await Group.findById(hiddenGroup);
+  const isExistHiddenByGroup = await Group.findById(hiddenByGroupId);
+  const isExishiddenGroup = await Group.findById(hiddenGroupId);
 
   if (!isExistHiddenByGroup) {
     throw new ApiError(

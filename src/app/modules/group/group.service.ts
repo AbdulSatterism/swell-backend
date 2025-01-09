@@ -207,9 +207,9 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
 
   // Fetch hidden groups for the given groupId
   const hiddenGroups = await HiddenGroup.find({
-    hiddenByGroup: groupId,
-  }).select('hiddenGroup');
-  const hiddenGroupIds = hiddenGroups.map(doc => doc.hiddenGroup);
+    hiddenByGroupId: groupId,
+  }).select('hiddenGroupId');
+  const hiddenGroupIds = hiddenGroups.map(doc => doc.hiddenGroupId);
 
   // Perform geospatial aggregation to find nearby groups, exclude groups with the userId in invite[],
   // and exclude hidden groups
