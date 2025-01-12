@@ -56,12 +56,47 @@ const showAllMessageSpeceficGroup = async (roomId: string) => {
   // const parts = roomId.split('-');
 
   // const chatGroupIdOne = parts[0];
-  // // const chatGroupIdOne = new mongoose.Types.ObjectId(parts[0]);
-  // const chatGroupIdTwo = new mongoose.Types.ObjectId(parts[1]);
-  // console.log({ chatGroupIdOne });
-  // // console.log(chatGroupIdTwo);
+  // const chatGroupIdOne = parts[0];
+  // const chatGroupIdTwo = parts[1];
 
-  // messages.filter(message => console.log(message.groupId === chatGroupIdOne));
+  // for (const message of messages) {
+  //   if (message.groupId.toString() === chatGroupIdOne) {
+  //     const id = new mongoose.Types.ObjectId(message.groupId);
+  //     // Update read to true for all messages with groupId matching chatGroupIdOne
+  //     await Message.updateMany(
+  //       {
+  //         groupId: { $in: [id] },
+  //       },
+  //       { $set: { read: true } },
+  //     );
+  //   }
+
+  //   if (message.groupId.toString() === chatGroupIdTwo) {
+  //     // Update read to true for all messages with groupId matching chatGroupIdTwo
+  //     // await Message.updateMany(
+  //     //   { groupId: message.groupId },
+  //     //   { $set: { read: true } },
+  //     // );
+
+  //     const id = new mongoose.Types.ObjectId(message.groupId);
+  //     // Update read to true for all messages with groupId matching chatGroupIdOne
+  //     await Message.updateMany(
+  //       {
+  //         groupId: { $in: [id] },
+  //       },
+  //       { $set: { read: true } },
+  //     );
+  //   }
+  // }
+
+  // messages.filter(async message => {
+  //   if (message.groupId.toString() === chatGroupIdOne) {
+  //     await Message.updateMany({ groupId: message.groupId }, { read: true });
+  //   }
+  //   if (message.groupId.toString() === chatGroupIdTwo) {
+  //     await Message.updateMany({ groupId: message.groupId }, { read: true });
+  //   }
+  // });
 
   // console.log(allMatchChatGroupIdOne);
 
