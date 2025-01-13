@@ -5,6 +5,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Group } from './group.model';
 import mongoose from 'mongoose';
 import { HiddenGroup } from '../hiddenGroup/hiddenGroup.model';
+import { AcceptedGroup } from '../acceptedGroup/acceptedGroup.model';
 
 const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
   const { createdBy, invite } = payload;
@@ -232,6 +233,14 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
   }).select('hiddenGroupId');
   const hiddenGroupIds = hiddenGroups.map(doc => doc.hiddenGroupId);
 
+  // Fetch accepted groups for the given groupId
+  const acceptedGroups = await AcceptedGroup.find({
+    acceptedByGroupId: groupId,
+  }).select('acceptedGroupId');
+  const acceptedGroupIds = acceptedGroups.map(doc => doc.acceptedGroupId);
+
+  const excludedGroupIds = [...hiddenGroupIds, ...acceptedGroupIds];
+
   // Perform geospatial aggregation to find nearby groups, exclude groups with the userId in invite[],
   // and exclude hidden groups
   const nearestGroups = await Group.aggregate([
@@ -248,9 +257,13 @@ const getNearestAllGroup = async (groupId: string, userId: string) => {
     },
     {
       $match: {
-        _id: { $nin: hiddenGroupIds }, // Exclude hidden groups
+        _id: { $nin: excludedGroupIds }, // Exclude hidden groups
         invite: { $ne: userObjectId }, // Exclude groups where invite[] contains userId
       },
+      // $match: {
+      //   _id: { $nin: hiddenGroupIds }, // Exclude hidden groups
+      //   invite: { $ne: userObjectId }, // Exclude groups where invite[] contains userId
+      // },
     },
     {
       $lookup: {

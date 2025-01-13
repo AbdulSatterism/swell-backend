@@ -13,6 +13,7 @@ import { User } from '../user/user.model';
 import { Notification } from '../notifications/notifications.model';
 import mongoose from 'mongoose';
 import { group } from 'console';
+import { AcceptedGroup } from '../acceptedGroup/acceptedGroup.model';
 
 const sendInvitaioin = async (
   senderGroupId: string,
@@ -133,6 +134,13 @@ const responseInvitation = async (invitationId: string, response: string) => {
       chatRoom,
       message: 'Chat started between the groups.',
     });
+
+    const acceptedPayload = {
+      acceptedByGroupId: senderGroupId,
+      acceptedGroupId: receiverGroupId,
+    };
+    // when accepted then create new collecton where have accepted group
+    await AcceptedGroup.create(acceptedPayload);
   }
 
   return chatGroup;
