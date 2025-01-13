@@ -15,6 +15,18 @@ const allUserChattingGroup = catchAsync(async (req, res) => {
   });
 });
 
+const chatGroupList = catchAsync(async (req, res) => {
+  const result = await chatGroupServices.chatGroupList(req.params.groupId);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'chating groups',
+    data: result,
+  });
+});
+
 export const chatGroupControllers = {
   allUserChattingGroup,
+  chatGroupList,
 };

@@ -100,20 +100,8 @@ const showAllMessageSpeceficGroup = async (roomId: string) => {
 
   // console.log(allMatchChatGroupIdOne);
 
-  // for (const message of messages) {
-  //   console.log(message.groupId);
-  //   console.log(message.groupId);
-  //   if (message.groupId === chatGroupIdOne) {
-  //     // Update read to true for messages with groupId matching chatGroupIdOne
-  //     await Message.updateOne({ _id: message._id }, { read: true });
-  //   } else if (message.groupId === chatGroupIdTwo) {
-  //     // Update read to false (or any specific logic) for messages with groupId matching chatGroupIdTwo
-  //     await Message.updateOne({ _id: message._id }, { read: false });
-  //   }
-  // }
-
   // if message is read then update the read field to true
-  // await Message.updateMany({ roomId, read: false }, { read: true });
+  await Message.updateMany({ roomId, read: true }, { read: false });
 
   return messages;
 };

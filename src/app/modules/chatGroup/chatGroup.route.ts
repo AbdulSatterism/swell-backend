@@ -15,4 +15,10 @@ router.get(
   chatGroupControllers.allUserChattingGroup,
 );
 
+router.get(
+  '/group-list/:groupId',
+  // auth(USER_ROLES.ADMIN, USER_ROLES.USER),
+  chatGroupControllers.chatGroupList,
+);
+
 export const chatGroupRoutes = router;
