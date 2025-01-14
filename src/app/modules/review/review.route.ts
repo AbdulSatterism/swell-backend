@@ -17,6 +17,12 @@ router.post(
 
 router.get('/', auth(USER_ROLES.ADMIN), reviewControllers.getAllReviewByAdmin);
 
+router.get(
+  '/single-review/:id',
+  auth(USER_ROLES.ADMIN),
+  reviewControllers.getSingleUserReview,
+);
+
 router.post(
   '/review-delete/:id',
   auth(USER_ROLES.ADMIN),

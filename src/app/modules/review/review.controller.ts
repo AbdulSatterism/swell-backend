@@ -27,6 +27,17 @@ const getAllReviewByAdmin = catchAsync(async (req, res) => {
   });
 });
 
+const getSingleUserReview = catchAsync(async (req, res) => {
+  const result = await reviewServices.getSingleUserReview(req.params.id);
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'review retrieve succefully',
+    data: result,
+  });
+});
+
 const deleteReviewByAdmin = catchAsync(async (req, res) => {
   const result = await reviewServices.deleteReviewByAdmin(req.params.id);
 
@@ -42,4 +53,5 @@ export const reviewControllers = {
   createReview,
   getAllReviewByAdmin,
   deleteReviewByAdmin,
+  getSingleUserReview,
 };

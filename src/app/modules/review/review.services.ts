@@ -27,6 +27,12 @@ const getAllReviewByAdmin = async () => {
   return result;
 };
 
+const getSingleUserReview = async (userId: string) => {
+  const result = await Review.findOne({ userId: userId });
+
+  return result;
+};
+
 const deleteReviewByAdmin = async (id: string) => {
   const isExistReview = await Review.findById(id);
 
@@ -43,4 +49,5 @@ export const reviewServices = {
   createReview,
   getAllReviewByAdmin,
   deleteReviewByAdmin,
+  getSingleUserReview,
 };
