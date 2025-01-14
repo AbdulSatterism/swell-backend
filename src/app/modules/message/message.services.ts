@@ -34,76 +34,62 @@ const createMessageIntoGroup = async (payload: TMessage) => {
   return newMessage; // Return the result after successful creation
 };
 
-const showAllMessageSpeceficGroup = async (roomId: string) => {
+// const showAllMessageSpeceficGroup = async (
+//   roomId: string,
+//   limit: number,
+//   page: number,
+// ) => {
+//   const existChatGroup = await ChatGroup.findOne({ roomId });
+
+//   if (!existChatGroup) {
+//     throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
+//   }
+
+//   const messages = await Message.find({ roomId })
+//     .populate('senderId', 'name email image') // Populate sender details (e.g., name, email)
+//     .sort({ createdAt: 1 });
+
+//   // await Message.updateMany({ roomId: roomId, read: false }, { read: true });
+
+//   return messages;
+// };
+
+const showAllMessageSpeceficGroup = async (
+  roomId: string,
+  query: { limit: number; page: number },
+) => {
+  const { limit, page } = query;
+  // Check if the chat group exists
   const existChatGroup = await ChatGroup.findOne({ roomId });
 
   if (!existChatGroup) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
+    throw new ApiError(StatusCodes.NOT_FOUND, 'This chat group not found');
   }
 
+  // Pagination logic
+  const skip = (page - 1) * limit;
+
+  // Fetch total count of messages
+  const totalMessages = await Message.countDocuments({ roomId });
+
+  // Fetch messages with pagination
   const messages = await Message.find({ roomId })
     .populate('senderId', 'name email image') // Populate sender details (e.g., name, email)
-    .sort({ createdAt: 1 });
+    .sort({ createdAt: -1 }) // Sort by latest messages
+    .skip(skip) // Skip documents for pagination
+    .limit(limit); // Limit the number of documents
 
-  // update the read field to true or false by groupId and roomId with splite
+  // Calculate total pages
+  const totalPages = Math.ceil(totalMessages / limit);
 
-  // let id: any = [];
-  // messages.forEach(message => {
-  //   id.push(message.groupId);
-  // });
-  // console.log(id);
-
-  // const parts = roomId.split('-');
-
-  // const chatGroupIdOne = parts[0];
-  // const chatGroupIdOne = parts[0];
-  // const chatGroupIdTwo = parts[1];
-
-  // for (const message of messages) {
-  //   if (message.groupId.toString() === chatGroupIdOne) {
-  //     const id = new mongoose.Types.ObjectId(message.groupId);
-  //     // Update read to true for all messages with groupId matching chatGroupIdOne
-  //     await Message.updateMany(
-  //       {
-  //         groupId: { $in: [id] },
-  //       },
-  //       { $set: { read: true } },
-  //     );
-  //   }
-
-  //   if (message.groupId.toString() === chatGroupIdTwo) {
-  //     // Update read to true for all messages with groupId matching chatGroupIdTwo
-  //     // await Message.updateMany(
-  //     //   { groupId: message.groupId },
-  //     //   { $set: { read: true } },
-  //     // );
-
-  //     const id = new mongoose.Types.ObjectId(message.groupId);
-  //     // Update read to true for all messages with groupId matching chatGroupIdOne
-  //     await Message.updateMany(
-  //       {
-  //         groupId: { $in: [id] },
-  //       },
-  //       { $set: { read: true } },
-  //     );
-  //   }
-  // }
-
-  // messages.filter(async message => {
-  //   if (message.groupId.toString() === chatGroupIdOne) {
-  //     await Message.updateMany({ groupId: message.groupId }, { read: true });
-  //   }
-  //   if (message.groupId.toString() === chatGroupIdTwo) {
-  //     await Message.updateMany({ groupId: message.groupId }, { read: true });
-  //   }
-  // });
-
-  // console.log(allMatchChatGroupIdOne);
-
-  // if message is read then update the read field to true
-  await Message.updateMany({ roomId: roomId, read: false }, { read: true });
-
-  return messages;
+  // Return paginated result
+  return {
+    totalMessages,
+    totalPages,
+    currentPage: Number(page),
+    limit: Number(limit),
+    messages,
+  };
 };
 
 const totalUnreadMessageSpecificGroup = async (roomId: string) => {

@@ -88,14 +88,44 @@ const socket = (io: Server) => {
     });
 
     // Listen for new messages and handle real-time broadcasting and storage
-    socket.on('new-message', async ({ roomId, senderId, message }) => {
-      try {
-        // Emit message to all users in the specified chat room
-        io.emit(`new-message:${roomId}`, {
-          senderId,
-          message,
-        });
+    // socket.on('new-message', async ({ roomId, senderId, message }) => {
+    //   try {
+    //     // Emit message to all users in the specified chat room
+    //     io.emit(`new-message:${roomId}`, {
+    //       senderId,
+    //       message,
+    //     });
 
+    //     // Save the message to the database
+    //     const newMessage = await Message.create({
+    //       roomId,
+    //       senderId,
+    //       message,
+    //     });
+
+    //     console.log(newMessage);
+
+    //     console.log(`Message saved to DB: ${newMessage}`);
+    //   } catch (error) {
+    //     console.error('Error saving message:', error);
+    //   }
+    // });
+
+    // socket.on(`send-message`, async ({ roomId, senderId, message }) => {
+    //   // Emit message to all users in the specified chat room
+
+    //   // Save the message to the database
+    //   const msg = await Message.create({
+    //     roomId,
+    //     senderId,
+    //     message,
+    //   }).populate('senderId', 'name email image');
+
+    //   io.emit(`receive-message:${msg.roomId}`, msg);
+    // });
+
+    socket.on('send-message', async ({ roomId, senderId, message }) => {
+      try {
         // Save the message to the database
         const newMessage = await Message.create({
           roomId,
@@ -103,21 +133,26 @@ const socket = (io: Server) => {
           message,
         });
 
-        console.log(newMessage);
+        // Populate the senderId field
+        const populatedMessage = await newMessage.populate(
+          'senderId',
+          'name email image',
+        );
 
-        console.log(`Message saved to DB: ${newMessage}`);
+        // Emit the message to all users in the specified chat room
+        io.emit(`receive-message:${populatedMessage.roomId}`, populatedMessage);
       } catch (error) {
-        console.error('Error saving message:', error);
+        console.error('Error sending message:', error);
       }
     });
 
-    // Listen for the chat-started event and emit to the specific room
-    socket.on('chat-started', ({ chatRoom }) => {
-      io.to(chatRoom).emit(`chat-started:${chatRoom}`, {
-        chatRoom,
-        message: 'Chat started between the groups.',
-      });
-    });
+    // // Listen for the chat-started event and emit to the specific room
+    // socket.on('chat-started', ({ chatRoom }) => {
+    //   io.to(chatRoom).emit(`chat-started:${chatRoom}`, {
+    //     chatRoom,
+    //     message: 'Chat started between the groups.',
+    //   });
+    // });
 
     // Handle disconnection
     socket.on('disconnect', () => {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-vars */
 import { NextFunction, Request, Response } from 'express';
@@ -22,6 +23,7 @@ const createMessage = catchAsync(
 const showAllMessageSpeceficGroup = catchAsync(async (req, res) => {
   const result = await messageServices.showAllMessageSpeceficGroup(
     req.params.roomId,
+    req.query as unknown as { limit: number; page: number },
   );
 
   sendResponse(res, {
