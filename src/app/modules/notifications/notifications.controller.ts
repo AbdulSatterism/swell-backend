@@ -27,6 +27,19 @@ const getUserNotification = catchAsync(async (req, res) => {
   });
 });
 
+const getGroupReceiverNotification = catchAsync(async (req, res) => {
+  const result = await NotificationService.getReceiverGroupNotification(
+    req?.params?.groupId,
+  );
+
+  sendResponse(res, {
+    success: true,
+    statusCode: StatusCodes.OK,
+    message: 'you got those notification',
+    data: result,
+  });
+});
+
 // const adminNotificationFromDB = catchAsync(
 //   async (req: Request, res: Response) => {
 //     const result = await NotificationService.adminNotification(req.query);
@@ -81,4 +94,5 @@ const getUserNotification = catchAsync(async (req, res) => {
 export const NotificationController = {
   getAllNotification,
   getUserNotification,
+  getGroupReceiverNotification,
 };

@@ -33,6 +33,19 @@ const getAllNotification = async () => {
   return data;
 };
 
+const getReceiverGroupNotification = async (groupId: string) => {
+  const result = await Notification.find({ receiverGroupId: groupId });
+
+  const count = await Notification.countDocuments();
+
+  const data = {
+    result,
+    count,
+  };
+
+  return data;
+};
+
 const getUserNotification = async (userId: string) => {
   const existUser = await User.findById(userId);
 
@@ -153,4 +166,5 @@ const getUserNotification = async (userId: string) => {
 export const NotificationService = {
   getAllNotification,
   getUserNotification,
+  getReceiverGroupNotification,
 };

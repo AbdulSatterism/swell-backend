@@ -101,7 +101,7 @@ const showAllMessageSpeceficGroup = async (roomId: string) => {
   // console.log(allMatchChatGroupIdOne);
 
   // if message is read then update the read field to true
-  await Message.updateMany({ roomId, read: true }, { read: false });
+  await Message.updateMany({ roomId: roomId, read: false }, { read: true });
 
   return messages;
 };

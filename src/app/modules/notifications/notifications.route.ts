@@ -17,6 +17,12 @@ router.get(
   NotificationController.getUserNotification,
 );
 
+router.get(
+  '/group-notification/:groupId',
+  auth(USER_ROLES.USER, USER_ROLES.ADMIN),
+  NotificationController.getGroupReceiverNotification,
+);
+
 // router.patch(
 //   '/',
 //   auth(USER_ROLES.USER),

@@ -12,6 +12,7 @@ import { privacyRoutes } from '../app/modules/privacy/privacy.routes';
 import { aboutRoutes } from '../app/modules/aboutUs/aboutUs.route';
 import { reviewRoutes } from '../app/modules/review/review.route';
 import { hiddenGroupRoutes } from '../app/modules/hiddenGroup/hiddenGroup.route';
+import { tersmConditionRoutes } from '../app/modules/termsAndCondition/termsAndCondition.route';
 const router = express.Router();
 
 const apiRoutes = [
@@ -27,6 +28,7 @@ const apiRoutes = [
   { path: '/about', route: aboutRoutes },
   { path: '/review', route: reviewRoutes },
   { path: '/hidden', route: hiddenGroupRoutes },
+  { path: '/terms', route: tersmConditionRoutes },
 ];
 
 apiRoutes.forEach(route => router.use(route.path, route.route));
