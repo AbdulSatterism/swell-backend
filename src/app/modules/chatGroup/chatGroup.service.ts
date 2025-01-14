@@ -40,7 +40,15 @@ const chatGroupList = async (groupId: string) => {
 
   // Fetch chat groups with required fields for invite users and last message
   const chatGroups = await ChatGroup.aggregate([
-    { $match: { group1: new mongoose.Types.ObjectId(groupId) } }, // Match by group1
+    {
+      // $match: { group1: new mongoose.Types.ObjectId(groupId) }
+      $match: {
+        $or: [
+          { group1: new mongoose.Types.ObjectId(groupId) }, // Match by group1
+          { group2: new mongoose.Types.ObjectId(groupId) }, // Match by group2
+        ],
+      },
+    }, // Match by group1
     {
       $lookup: {
         from: 'groups', // Join with the Group collection for group1
