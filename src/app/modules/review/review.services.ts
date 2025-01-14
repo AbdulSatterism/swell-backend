@@ -28,9 +28,15 @@ const getAllReviewByAdmin = async () => {
 };
 
 const getSingleUserReview = async (userId: string) => {
-  const result = await Review.findOne({ userId: userId });
+  // Find the latest review for the given userId
+  const result = await Review.findOne({ userId: userId })
+    .sort({ createdAt: -1 }) // Sort reviews by createdAt in descending order
+    .limit(1); // Limit the result to one document
 
   return result;
+  // const result = await Review.findOne({ userId: userId });
+
+  // return result;
 };
 
 const deleteReviewByAdmin = async (id: string) => {
