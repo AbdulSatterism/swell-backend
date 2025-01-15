@@ -94,7 +94,9 @@ const getNearestGroup = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'all nearest group by coresponding user',
+    message: result
+      ? 'all nearest group by coresponding group'
+      : 'nearest group not available',
     data: result,
   });
 });
