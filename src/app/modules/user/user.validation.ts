@@ -16,6 +16,7 @@ const updateUserProfileSchema = z.object({
   address: z.string().optional(),
   instagram: z.string().optional(),
   name: z.string().optional(),
+  // phone: z.string().optional(),
 });
 
 const updateLocationZodSchema = z.object({
