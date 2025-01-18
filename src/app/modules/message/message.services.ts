@@ -94,19 +94,82 @@ const showAllMessageSpeceficGroup = async (
   };
 };
 
-const totalUnreadMessageSpecificGroup = async (roomId: string) => {
-  const existChatGroup = await ChatGroup.findOne({ roomId });
+// const totalUnreadMessageSpecificGroup = async (roomId: string) => {
+//   const existChatGroup = await ChatGroup.findOne({ roomId });
 
-  if (!existChatGroup) {
-    throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
-  }
+//   if (!existChatGroup) {
+//     throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
+//   }
 
-  // Find messages in the room with 'read' field set to false
-  const unreadCount = await Message.countDocuments({ roomId, read: false });
+//   // Find messages in the room with 'read' field set to false
+//   const unreadCount = await Message.countDocuments({ roomId, read: false });
 
-  // Return the total count of unread messages
-  return unreadCount;
+//   // Return the total count of unread messages
+//   return unreadCount;
+// };
+
+const totalUnreadMessageSpecificGroup = async (groupId: string) => {
+  // Step 1: Find the chat groups where the given groupId is part of group1 or group2
+  const chatGroups = await ChatGroup.find({
+    $or: [{ group1: groupId }, { group2: groupId }],
+  });
+
+  // Step 2: Extract all roomIds from the matched chat groups
+  const roomIds = chatGroups.map(group => group.roomId);
+
+  // Step 3: Count unread messages for the matched roomIds
+  const unreadCount = await Message.aggregate([
+    {
+      $match: {
+        roomId: { $in: roomIds }, // Match messages with roomIds from chat groups
+        read: false, // Only unread messages
+      },
+    },
+    {
+      $count: 'totalUnreadMessages', // Count the unread messages
+    },
+  ]);
+
+  // Return the count (default to 0 if no messages found)
+  return unreadCount.length > 0 ? unreadCount[0].totalUnreadMessages : 0;
 };
+
+// const totalUnreadMessageSpecificGroup = async (groupId: string) => {
+//   const unreadCount = await ChatGroup.aggregate([
+//     // Step 1: Match chat groups where groupId is part of group1 or group2
+//     {
+//       $match: {
+//         $or: [{ group1: groupId }, { group2: groupId }],
+//       },
+//     },
+//     // Step 2: Lookup messages for the matched chat groups
+//     {
+//       $lookup: {
+//         from: 'messages', // The Message collection
+//         localField: 'roomId', // roomId in ChatGroup
+//         foreignField: 'roomId', // roomId in Message
+//         as: 'messages', // Resulting array of messages
+//       },
+//     },
+//     // Step 3: Unwind the messages array to work with individual messages
+//     {
+//       $unwind: '$messages',
+//     },
+//     // Step 4: Filter only unread messages
+//     {
+//       $match: {
+//         'messages.read': false,
+//       },
+//     },
+//     // Step 5: Count the total unread messages
+//     {
+//       $count: 'totalUnreadMessages',
+//     },
+//   ]);
+
+//   // Return the total count or default to 0 if no messages found
+//   return unreadCount.length > 0 ? unreadCount[0].totalUnreadMessages : 0;
+// };
 
 export const messageServices = {
   createMessageIntoGroup,
