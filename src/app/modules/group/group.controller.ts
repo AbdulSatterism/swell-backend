@@ -57,16 +57,39 @@ const getSingleGroup = catchAsync(async (req, res) => {
   });
 });
 
+// const groupUpdate = catchAsync(async (req, res) => {
+//   const result = await groupServices.updateGroupProfile(
+//     req.params.groupId,
+//     req.body,
+//   )
+
+//   sendResponse(res, {
+//     success: true,
+//     statusCode: StatusCodes.OK,
+//     message: 'group updated successfully',
+//     data: result,
+//   });
+// });
+
 const groupUpdate = catchAsync(async (req, res) => {
+  let image;
+  if (req.files && 'image' in req.files && req.files.image[0]) {
+    image = `/images/${req.files.image[0].filename}`;
+  }
+
+  const value = {
+    coverPhoto: image,
+    ...req.body,
+  };
+
   const result = await groupServices.updateGroupProfile(
     req.params.groupId,
-    req.body,
+    value,
   );
-
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: 'group updated successfully',
+    message: 'User profile updated successfully',
     data: result,
   });
 });

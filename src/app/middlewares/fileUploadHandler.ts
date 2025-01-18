@@ -29,6 +29,9 @@ const fileUploadHandler = () => {
         case 'image':
           uploadDir = path.join(baseUploadDir, 'images');
           break;
+        // case 'coverPhoto':
+        //   uploadDir = path.join(baseUploadDir, 'coverPhotos');
+        //   break;
         case 'media':
           uploadDir = path.join(baseUploadDir, 'medias');
           break;
@@ -55,47 +58,8 @@ const fileUploadHandler = () => {
     },
   });
 
-  //file filter
-  // const filterFilter = (req: Request, file: any, cb: FileFilterCallback) => {
-  //   if (file.fieldname === 'image') {
-  //     if (
-  //       file.mimetype === 'image/jpeg' ||
-  //       file.mimetype === 'image/png' ||
-  //       file.mimetype === 'image/jpg'
-  //     ) {
-  //       cb(null, true);
-  //     } else {
-  //       cb(
-  //         new ApiError(
-  //           StatusCodes.BAD_REQUEST,
-  //           'Only .jpeg, .png, .jpg file supported',
-  //         ),
-  //       );
-  //     }
-  //   } else if (file.fieldname === 'media') {
-  //     if (file.mimetype === 'video/mp4' || file.mimetype === 'audio/mpeg') {
-  //       cb(null, true);
-  //     } else {
-  //       cb(
-  //         new ApiError(
-  //           StatusCodes.BAD_REQUEST,
-  //           'Only .mp4, .mp3, file supported',
-  //         ),
-  //       );
-  //     }
-  //   } else if (file.fieldname === 'doc') {
-  //     if (file.mimetype === 'application/pdf') {
-  //       cb(null, true);
-  //     } else {
-  //       cb(new ApiError(StatusCodes.BAD_REQUEST, 'Only pdf supported'));
-  //     }
-  //   } else {
-  //     throw new ApiError(StatusCodes.BAD_REQUEST, 'This file is not supported');
-  //   }
-  // };
-
   const filterFilter = (req: Request, file: any, cb: FileFilterCallback) => {
-    if (file.fieldname === 'image') {
+    if (file.fieldname === 'image' || file.fieldname === 'coverPhoto') {
       // Allow all images without checking the type
       cb(null, true);
     } else if (file.fieldname === 'media') {
@@ -125,6 +89,7 @@ const fileUploadHandler = () => {
     fileFilter: filterFilter,
   }).fields([
     { name: 'image', maxCount: 3 },
+    { name: 'coverPhoto', maxCount: 3 },
     { name: 'media', maxCount: 3 },
     { name: 'doc', maxCount: 3 },
   ]);

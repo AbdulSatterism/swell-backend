@@ -82,6 +82,8 @@ const showAllMessageSpeceficGroup = async (
   // Calculate total pages
   const totalPages = Math.ceil(totalMessages / limit);
 
+  await Message.updateMany({ roomId: roomId, read: false }, { read: true });
+
   // Return paginated result
   return {
     totalMessages,

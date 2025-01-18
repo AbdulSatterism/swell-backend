@@ -45,6 +45,7 @@ router.post(
 router.get('/single-group/:groupId', groupController.getSingleGroup);
 
 // update group profile
+
 router.post(
   '/update-group/:groupId',
   fileUploadHandler(),
@@ -59,19 +60,7 @@ router.post(
         );
       }
 
-      // Handle image updates if files are uploaded
-      if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-        // Assuming `fileUploadHandler` stores files in req.files
-        const uploadedFiles = req.files.map((file: any) => file.path);
-        validatedData = {
-          ...validatedData,
-          image: uploadedFiles[0], // Update the specific image field
-        };
-      }
-
-      // Pass the validated data to the controller
       req.body = validatedData;
-
       await groupController.groupUpdate(req, res, next);
     } catch (error) {
       next(error);

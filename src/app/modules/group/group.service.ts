@@ -6,6 +6,7 @@ import { Group } from './group.model';
 import mongoose from 'mongoose';
 import { HiddenGroup } from '../hiddenGroup/hiddenGroup.model';
 import { AcceptedGroup } from '../acceptedGroup/acceptedGroup.model';
+import unlinkFile from '../../../shared/unlinkFile';
 
 const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
   const { createdBy, invite } = payload;
@@ -92,6 +93,10 @@ const updateGroupProfile = async (
 
   if (!groupExist) {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Group not found');
+  }
+
+  if (groupExist) {
+    unlinkFile(groupExist.coverPhoto);
   }
 
   // update group profile

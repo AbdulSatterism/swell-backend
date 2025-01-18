@@ -17,7 +17,6 @@ const updateGroupValidationSchema = z.object({
   address: z.string().optional(),
   description: z.string().optional(),
   bio: z.string().optional(),
-  Image: z.string().optional(),
   groupName: z.string().optional(),
 });
 
