@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const createGroupValidationSchema = z.object({
   createdBy: z.string(),
+  groupName: z.string().optional(),
   invite: z.array(z.string()),
   address: z.string(),
   description: z.string(),

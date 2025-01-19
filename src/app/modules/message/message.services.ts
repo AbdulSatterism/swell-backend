@@ -34,26 +34,6 @@ const createMessageIntoGroup = async (payload: TMessage) => {
   return newMessage; // Return the result after successful creation
 };
 
-// const showAllMessageSpeceficGroup = async (
-//   roomId: string,
-//   limit: number,
-//   page: number,
-// ) => {
-//   const existChatGroup = await ChatGroup.findOne({ roomId });
-
-//   if (!existChatGroup) {
-//     throw new ApiError(StatusCodes.NOT_FOUND, 'this chat group not found');
-//   }
-
-//   const messages = await Message.find({ roomId })
-//     .populate('senderId', 'name email image') // Populate sender details (e.g., name, email)
-//     .sort({ createdAt: 1 });
-
-//   // await Message.updateMany({ roomId: roomId, read: false }, { read: true });
-
-//   return messages;
-// };
-
 const showAllMessageSpeceficGroup = async (
   roomId: string,
   query: { limit: number; page: number },
@@ -133,43 +113,6 @@ const totalUnreadMessageSpecificGroup = async (groupId: string) => {
   // Return the count (default to 0 if no messages found)
   return unreadCount.length > 0 ? unreadCount[0].totalUnreadMessages : 0;
 };
-
-// const totalUnreadMessageSpecificGroup = async (groupId: string) => {
-//   const unreadCount = await ChatGroup.aggregate([
-//     // Step 1: Match chat groups where groupId is part of group1 or group2
-//     {
-//       $match: {
-//         $or: [{ group1: groupId }, { group2: groupId }],
-//       },
-//     },
-//     // Step 2: Lookup messages for the matched chat groups
-//     {
-//       $lookup: {
-//         from: 'messages', // The Message collection
-//         localField: 'roomId', // roomId in ChatGroup
-//         foreignField: 'roomId', // roomId in Message
-//         as: 'messages', // Resulting array of messages
-//       },
-//     },
-//     // Step 3: Unwind the messages array to work with individual messages
-//     {
-//       $unwind: '$messages',
-//     },
-//     // Step 4: Filter only unread messages
-//     {
-//       $match: {
-//         'messages.read': false,
-//       },
-//     },
-//     // Step 5: Count the total unread messages
-//     {
-//       $count: 'totalUnreadMessages',
-//     },
-//   ]);
-
-//   // Return the total count or default to 0 if no messages found
-//   return unreadCount.length > 0 ? unreadCount[0].totalUnreadMessages : 0;
-// };
 
 export const messageServices = {
   createMessageIntoGroup,

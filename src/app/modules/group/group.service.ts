@@ -115,9 +115,19 @@ const allGroupSpecificUser = async (userId: string) => {
     throw new ApiError(StatusCodes.BAD_REQUEST, 'this user not found');
   }
 
-  const specificUserGroup = await Group.find({ createdBy: userId }).populate({
+  // const specificUserGroup = await Group.find({ createdBy: userId }).populate({
+  //   path: 'invite',
+  //   select: 'name image email',
+  // });
+
+  const specificUserGroup = await Group.find({
+    $or: [
+      { createdBy: userId }, // User is the creator
+      { invite: userId }, // User is in the invite array
+    ],
+  }).populate({
     path: 'invite',
-    select: 'name image email',
+    select: 'name image email', // Include only specific fields for invite
   });
 
   return specificUserGroup;
@@ -324,7 +334,19 @@ const leaveFromGroup = async (groupId: string, userId: string) => {
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
   if (!existGroup.invite.includes(userObjectId)) {
-    throw new Error('User is not a member of this group.');
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      'User is not a member of this group.',
+    );
+  }
+
+  // console.log(existGroup.createdBy.toString() === userObjectId.toString());
+
+  if (existGroup.createdBy.toString() === userObjectId.toString()) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      "sorry you created this group. you can't leave",
+    );
   }
 
   const updatedGroup = await Group.findByIdAndUpdate(

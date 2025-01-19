@@ -40,7 +40,9 @@ const getSpecificGroup = catchAsync(
     sendResponse(res, {
       success: true,
       statusCode: StatusCodes.OK,
-      message: 'specific user group retriev successfully',
+      message: result
+        ? 'specific user group retriev successfully'
+        : "you haven't any active group",
       data: result,
     });
   },
@@ -131,7 +133,7 @@ const leaveFromGroup = catchAsync(async (req, res) => {
   sendResponse(res, {
     success: true,
     statusCode: StatusCodes.OK,
-    message: `user ${userId} has left from the group`,
+    message: `user  has left from the group`,
     data: result,
   });
 });

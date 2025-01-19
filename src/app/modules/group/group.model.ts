@@ -5,7 +5,7 @@ const groupSchema: Schema = new Schema<TGroup>(
   {
     groupName: {
       type: String,
-      default: 'group',
+      default: 'new group',
       trim: true,
     },
     createdBy: {
