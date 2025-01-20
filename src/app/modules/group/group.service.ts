@@ -345,7 +345,7 @@ const leaveFromGroup = async (groupId: string, userId: string) => {
   if (existGroup.createdBy.toString() === userObjectId.toString()) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
-      "sorry you created this group. you can't leave",
+      "Sorry you created this group. you can't leave!!",
     );
   }
 
