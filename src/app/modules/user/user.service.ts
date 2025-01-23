@@ -18,7 +18,7 @@ const createUserFromDb = async (payload: IUser) => {
   const result = await User.create(payload);
 
   if (!result) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, "User doesn't exist!");
+    throw new ApiError(StatusCodes.BAD_REQUEST, 'Failed to create user');
   }
 
   const otp = generateOTP();
