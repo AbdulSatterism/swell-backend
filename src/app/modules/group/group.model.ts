@@ -39,6 +39,11 @@ const groupSchema: Schema = new Schema<TGroup>(
       enum: ['MALE', 'FEMALE', 'OTHERS'],
       required: true,
     },
+    lookingFor: {
+      type: String,
+      enum: ['MALE', 'FEMALE', 'OTHERS'],
+      required: true,
+    },
     location: {
       type: { type: String, default: 'Point' },
       coordinates: { type: [Number] }, //[example:longtitude->90.413, latitude->23.456]..must follow this format otherwise error

@@ -9,6 +9,7 @@ export type TGroup = {
   bio: string;
   description: string;
   gender: 'MALE' | 'FEMALE' | 'OTHERS';
+  lookingFor: 'MALE' | 'FEMALE' | 'OTHERS';
   location: {
     type: 'Point';
     coordinates: [number, number]; // [longitude, latitude]

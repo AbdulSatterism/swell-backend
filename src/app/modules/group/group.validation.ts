@@ -8,6 +8,7 @@ const createGroupValidationSchema = z.object({
   description: z.string(),
   bio: z.string(),
   gender: z.enum(['MALE', 'FEMALE', 'OTHERS']),
+  lookingFor: z.enum(['MALE', 'FEMALE', 'OTHERS']),
   location: z.object({
     type: z.literal('Point'),
     coordinates: z.array(z.number()),

@@ -111,9 +111,12 @@ const myAllJoinedGroup = catchAsync(async (req, res) => {
 const getNearestGroup = catchAsync(async (req, res) => {
   const groupId = req.query.groupId;
   const userId = req.user.id;
+  const { page, limit } = req.query;
   const result = await groupServices.getNearestAllGroup(
     groupId as string,
     userId,
+    Number(page),
+    Number(limit),
   );
 
   sendResponse(res, {

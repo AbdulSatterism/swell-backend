@@ -247,6 +247,11 @@ const getGroupInvitation = async (groupId: string) => {
   //     },
   //   });
 
+  // Calculate pagination values
+  // const skip = (page - 1) * limit;
+
+  // Fetch accepted groups for the given groupId
+
   const invitations = await Invitation.find({
     receiverGroupId: groupObjectId,
   })
