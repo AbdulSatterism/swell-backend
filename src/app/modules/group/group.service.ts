@@ -15,7 +15,7 @@ const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
     throw new ApiError(StatusCodes.NOT_FOUND, 'Group member empty');
   }
 
-  if (invite.length >= 6) {
+  if (invite.length > 6) {
     throw new ApiError(
       StatusCodes.FORBIDDEN,
       'invited member can not be more than 6',

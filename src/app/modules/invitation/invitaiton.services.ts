@@ -254,6 +254,7 @@ const getGroupInvitation = async (groupId: string) => {
 
   const invitations = await Invitation.find({
     receiverGroupId: groupObjectId,
+    status: 'PENDING',
   })
     .populate('userId') // Populate userId
     .populate({
