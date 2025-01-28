@@ -79,7 +79,7 @@ const createGroupIntoDB = async (userId: string, payload: Partial<TGroup>) => {
 const getSingleGroup = async (groupId: string) => {
   const result = await Group.findById({ _id: groupId }).populate({
     path: 'invite createdBy',
-    select: 'name image email',
+    select: 'name image email school address',
   });
 
   return result;
@@ -414,6 +414,7 @@ const getNearestAllGroup = async (
         coverPhoto: 1,
         address: 1,
         bio: 1,
+        description: 1,
         gender: 1,
         location: 1,
         distance: 1,
@@ -459,18 +460,40 @@ const leaveFromGroup = async (groupId: string, userId: string) => {
 
   // console.log(existGroup.createdBy.toString() === userObjectId.toString());
 
-  if (existGroup.createdBy.toString() === userObjectId.toString()) {
-    throw new ApiError(
-      StatusCodes.BAD_REQUEST,
-      "Sorry you created this group. you can't leave!!",
-    );
-  }
+  // if (existGroup.createdBy.toString() === userObjectId.toString()) {
+  //   throw new ApiError(
+  //     StatusCodes.BAD_REQUEST,
+  //     "Sorry you created this group. you can't leave!!",
+  //   );
+  // }
 
   const updatedGroup = await Group.findByIdAndUpdate(
     groupId,
     { $pull: { invite: userObjectId } },
     { new: true }, // Return the updated document
   );
+
+  // Check if the user was the creator of the group
+  // if (existGroup.createdBy.toString() === userObjectId.toString()) {
+  //   // If the user was the creator, decrement their group limit
+  //   await User.findByIdAndUpdate(
+  //     { _id: existGroup.createdBy },
+  //     { $inc: { groupLimit: -1 } },
+  //     { new: true },
+  //   );
+  // }
+
+  if (existGroup.createdBy.toString() === userObjectId.toString()) {
+    // make null in createdBy property
+    await Group.findByIdAndUpdate(groupId, { createdBy: null }, { new: true });
+
+    // Decrement the creator's groupLimit
+    await User.findByIdAndUpdate(
+      { _id: existGroup.createdBy },
+      { $inc: { groupLimit: -1 } },
+      { new: true },
+    );
+  }
 
   return updatedGroup;
 };
