@@ -22,6 +22,11 @@ async function main() {
     seedAdmin();
     mongoose.connect(config.database_url as string);
     logger.info(colors.green('🚀 Database connected successfully'));
+    logger.info(
+      colors.green(
+        `🚀 Available at: http://${config.ip_address}:${config.port}`,
+      ),
+    );
 
     const port =
       typeof config.port === 'number' ? config.port : Number(config.port);
