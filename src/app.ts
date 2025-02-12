@@ -19,7 +19,6 @@ app.use(
       'http://localhost:5174',
       'http://localhost:5173',
       'http://192.168.10.33:5173',
-      'https://212f-115-127-156-9.ngrok-free.app',
     ],
     credentials: true,
   }),
