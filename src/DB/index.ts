@@ -9,6 +9,7 @@ const superUser = {
   role: USER_ROLES.ADMIN,
   email: config.admin.email,
   password: config.admin.password,
+  gender: 'MALE',
   image: '',
   verified: true,
 };
