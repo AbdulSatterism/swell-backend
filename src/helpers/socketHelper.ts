@@ -36,7 +36,7 @@ const socket = (io: Server) => {
       }
     });
 
-    // // Listen for the chat-started event and emit to the specific room
+    //* Listen for the chat-started event and emit to the specific room
     // socket.on('chat-started', ({ chatRoom }) => {
     //   io.to(chatRoom).emit(`chat-started:${chatRoom}`, {
     //     chatRoom,

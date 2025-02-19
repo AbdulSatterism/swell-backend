@@ -20,6 +20,7 @@ let server: any;
 async function main() {
   try {
     seedAdmin();
+
     mongoose.connect(config.database_url as string);
     logger.info(colors.green('🚀 Database connected successfully'));
     logger.info(
